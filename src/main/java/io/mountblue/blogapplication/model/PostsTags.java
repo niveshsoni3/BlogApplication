@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "posts_tags")
+@Table(name = "post_tags")
 public class PostsTags {
 
     @EmbeddedId

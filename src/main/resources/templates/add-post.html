@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Blog Post</title>
+</head>
+<body>
+    <h1>Create Blog Post</h1>
+
+    <form action="#" th:action="@{/create}" th:object="${post}" method="post">
+        <label for="title">Title:</label>
+        <input type="text" id="title" th:field="*{title}" required>
+        <br>
+
+        <label for="content">Content:</label>
+        <textarea id="content" th:field="*{content}" required></textarea>
+        <br>
+
+        <label for="author">Author:</label>
+        <input type="text" id="author" th:field="*{author}" required>
+        <br>
+
+        <label for="tagsList">Tags (comma-separated):</label>
+        <input type="text" name="tagsList" id="tagsList" required>
+        <br>
+
+
+        <button type="submit" name="action" value="true">Publish</button>
+        <button type="submit" name="action" value="false">Save as Draft</button>
+    </form>
+</body>
+</html>

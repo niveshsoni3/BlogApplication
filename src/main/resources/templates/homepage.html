@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>My Blog Application</title>
+</head>
+<body>
+<div class="container">
+    <h3>My Blog Application</h3>
+    <hr>
+
+    <a th:href="@{/newpost}">
+        Create new blog
+    </a>
+    <table>
+        <thead>
+        <tr>
+            <td>Title</td>
+            <td>Excerpt</td>
+            <td>Author</td>
+            <td>Published Date</td>
+            <td>Tags</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tempBlog : ${posts}" th:field="tempEmployee">
+            <td th:text="${tempBlog.title}" />
+            <td th:text="${tempBlog.excerpt}" />
+            <td th:text="${tempBlog.author}" />
+            <td th:text="${tempBlog.publishedAt}" />
+            <td th:text="${tempBlog.tags}" />
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
