@@ -1,10 +1,18 @@
 package io.mountblue.blogapplication.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Setter
+@Getter
+@NoArgsConstructor
+@ToString
 @Table(name = "post_tags")
 public class PostsTags {
 

@@ -6,22 +6,22 @@
 </head>
 <body>
 <div class="container">
-    <h3>My Blog Application</h3>
+    <h1>My Blog Application</h1>
     <hr>
 
     <a th:href="@{/newpost}">
         Create new blog
     </a>
-    <table>
-        <thead>
-        <tr>
-            <td>Title</td>
-            <td>Excerpt</td>
-            <td>Author</td>
-            <td>Published Date</td>
-            <td>Tags</td>
-        </tr>
-        </thead>
+    <div class="post-list">
+        <div class="post-container" th:each="post : ${posts}">
+            <h2 th:text="${post.title}"></h2>
+            <p>Author: <span th:text="${post.author}"></span></p>
+            <p>Published Date: <span th:text="${post.published_at}"></span></p>
+            <p th:text="${post.content}"></p>
+        </div>
+    </div>
+
+
         <tbody>
         <tr th:each="tempBlog : ${posts}" th:field="tempEmployee">
             <td th:text="${tempBlog.title}" />
@@ -29,6 +29,12 @@
             <td th:text="${tempBlog.author}" />
             <td th:text="${tempBlog.publishedAt}" />
             <td th:text="${tempBlog.tags}" />
+            <td><a th:href="@{/showFormToUpdate(postId=${tempBlog.id})}">
+                Update
+            </a></td>
+            <td><a th:href="@{/deletePost(postId=${tempBlog.id})}">
+                Delete
+            </a></td>
         </tr>
         </tbody>
     </table>

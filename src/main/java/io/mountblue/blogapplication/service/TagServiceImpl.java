@@ -1,0 +1,58 @@
+package io.mountblue.blogapplication.service;
+
+import io.mountblue.blogapplication.model.Tag;
+import io.mountblue.blogapplication.repository.TagRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+@Service
+public class TagServiceImpl implements TagService{
+    private TagRepository tagRepository;
+
+    public TagServiceImpl(TagRepository tagRepository) {
+        this.tagRepository = tagRepository;
+    }
+
+
+    @Override
+    public List<String> findAllTagNames() {
+        return tagRepository.getAllTagNames();
+    }
+
+    @Override
+    public List<Tag> removeDuplicateTags(List<Tag> allPostTags) {
+        HashSet<Tag> alreadyCreatedTags = new HashSet<>(tagRepository.findAll());
+        List<Tag> newTags = new ArrayList<>();
+        for(Tag tag : alreadyCreatedTags){
+            System.out.println(tag + " asd");
+        }
+        for(Tag tag : allPostTags){
+            System.out.println(tag + " " + alreadyCreatedTags.contains(tag));
+            if(!alreadyCreatedTags.contains(tag)){
+                newTags.add(tag);
+                System.out.println(tag);
+            }
+        }
+        return newTags;
+    }
+
+    @Override
+    public List<Tag> covertStringToTagType(String tagList) {
+        String[] tagArray = tagList.split(",");
+        List<Tag> tags = new ArrayList<>();
+        HashSet<String> oldTags = new HashSet<>(tagRepository.getAllTagNames());
+        System.out.println(oldTags);
+        for(String tagName : tagArray){
+            if(!oldTags.contains(tagName.trim())){
+                Tag tag = new Tag();
+                tag.setName(tagName.trim());
+                tags.add(tag);
+                System.out.println(tag);
+            }
+        }
+        return tags;
+    }
+}
