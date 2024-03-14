@@ -3,41 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <title>My Blog Application</title>
+    <style>
+        .container {
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 800px;
+            font-family: Arial, sans-serif;
+            color: #333; /* Dark text color */
+        }
+
+        h1 {
+            color: #000;
+            text-align: center;
+        }
+
+        .post-container {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc; /* Light gray border */
+            padding-bottom: 10px;
+        }
+
+        .post-container a {
+            text-decoration: none;
+            color: #000; /* Black link color */
+        }
+
+        .post-container h2 {
+            margin-top: 30px;
+        }
+
+        .post-container p {
+            margin: 5px 0;
+        }
+
+        .new-blog-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #656565;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
     <h1>My Blog Application</h1>
     <hr>
 
-    <a th:href="@{/newpost}">
+    <a class="new-blog-button" th:href="@{/newpost}">
         Create new blog
     </a>
     <div class="post-list">
         <div class="post-container" th:each="post : ${posts}">
-            <h2 th:text="${post.title}"></h2>
-            <p>Author: <span th:text="${post.author}"></span></p>
-            <p>Published Date: <span th:text="${post.published_at}"></span></p>
-            <p th:text="${post.content}"></p>
+            <a th:href="@{'/post/' + ${post.id}}">
+                <h2 th:text="${post.title}"></h2>
+
+                <p>Author: <span th:text="${post.author}"></span></p>
+
+                <p>Published Date: <span th:text="${post.publishedAt}"></span></p>
+
+                <p th:text="${post.content}"></p>
+            </a>
         </div>
     </div>
-
-
-        <tbody>
-        <tr th:each="tempBlog : ${posts}" th:field="tempEmployee">
-            <td th:text="${tempBlog.title}" />
-            <td th:text="${tempBlog.excerpt}" />
-            <td th:text="${tempBlog.author}" />
-            <td th:text="${tempBlog.publishedAt}" />
-            <td th:text="${tempBlog.tags}" />
-            <td><a th:href="@{/showFormToUpdate(postId=${tempBlog.id})}">
-                Update
-            </a></td>
-            <td><a th:href="@{/deletePost(postId=${tempBlog.id})}">
-                Delete
-            </a></td>
-        </tr>
-        </tbody>
-    </table>
 </div>
 </body>
 </html>

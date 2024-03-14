@@ -52,6 +52,7 @@ public class PostServiceImpl implements PostService{
         Post existingPost = postRepository.findById(post.getId()).get();
         existingPost.setTitle(post.getTitle());
         existingPost.setContent(post.getContent());
+        existingPost.setUpdatedAt(LocalDateTime.now());
         String[] updatedTagNames = tagList.split(",");
         Collection<Tag> existingTags = existingPost.getTags();
         Map<String, Tag> existingTagsByName = new HashMap<>();
@@ -72,6 +73,7 @@ public class PostServiceImpl implements PostService{
         existingPost.getTags().addAll(tagsToAdd);
         existingPost.getTags().removeAll(tagsToRemove);
         existingPost.setTags(updatedTags);
+        System.out.println("inside update method");
         postRepository.save(existingPost);
     }
 }

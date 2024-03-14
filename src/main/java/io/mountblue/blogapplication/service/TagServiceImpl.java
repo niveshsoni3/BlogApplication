@@ -26,14 +26,9 @@ public class TagServiceImpl implements TagService{
     public List<Tag> removeDuplicateTags(List<Tag> allPostTags) {
         HashSet<Tag> alreadyCreatedTags = new HashSet<>(tagRepository.findAll());
         List<Tag> newTags = new ArrayList<>();
-        for(Tag tag : alreadyCreatedTags){
-            System.out.println(tag + " asd");
-        }
         for(Tag tag : allPostTags){
-            System.out.println(tag + " " + alreadyCreatedTags.contains(tag));
             if(!alreadyCreatedTags.contains(tag)){
                 newTags.add(tag);
-                System.out.println(tag);
             }
         }
         return newTags;
@@ -44,13 +39,11 @@ public class TagServiceImpl implements TagService{
         String[] tagArray = tagList.split(",");
         List<Tag> tags = new ArrayList<>();
         HashSet<String> oldTags = new HashSet<>(tagRepository.getAllTagNames());
-        System.out.println(oldTags);
         for(String tagName : tagArray){
             if(!oldTags.contains(tagName.trim())){
                 Tag tag = new Tag();
                 tag.setName(tagName.trim());
                 tags.add(tag);
-                System.out.println(tag);
             }
         }
         return tags;

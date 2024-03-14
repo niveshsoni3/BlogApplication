@@ -6,10 +6,7 @@ import io.mountblue.blogapplication.service.PostService;
 import io.mountblue.blogapplication.service.TagService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -69,6 +66,13 @@ public class PostController {
         Post post = postService.findById(postId);
         postService.removePost(post);
         return "redirect:/";
+    }
+
+    @GetMapping("/post/{postId}")
+    public String readPost(@PathVariable("postId") Long id, Model model){
+        Post post = postService.findById(id);
+        model.addAttribute("post", post);
+        return "show-post";
     }
 
 }
