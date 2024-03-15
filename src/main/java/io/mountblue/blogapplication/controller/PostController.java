@@ -85,4 +85,12 @@ public class PostController {
         return "homepage";
     }
 
+    @GetMapping("/search")
+    public String search(@RequestParam("searchString") String searchString, Model model){
+        List<Post> postsBasedOnSearch = postService.searchPostsByKeyword(searchString);
+        model.addAttribute("posts", postsBasedOnSearch);
+        return "homepage";
+    }
+
+
 }

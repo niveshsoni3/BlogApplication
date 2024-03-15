@@ -104,4 +104,9 @@ public class PostServiceImpl implements PostService{
     public void saveByPost(Post post) {
         postRepository.save(post);
     }
+
+    @Override
+    public List<Post> searchPostsByKeyword(String keyword) {
+        return postRepository.searchPostsByKeyword(keyword);
+    }
 }
