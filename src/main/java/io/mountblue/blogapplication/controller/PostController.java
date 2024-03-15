@@ -48,7 +48,7 @@ public class PostController {
         return "redirect:/";
     }
 
-    @GetMapping("/showFormToUpdate")
+    @GetMapping("/showPostToUpdate")
     public String updatePost(@RequestParam("postId") long postId, Model model){
         Post post = postService.findById(postId);
         model.addAttribute("post", post);
@@ -72,6 +72,7 @@ public class PostController {
     public String readPost(@PathVariable("postId") Long id, Model model){
         Post post = postService.findById(id);
         model.addAttribute("post", post);
+        model.addAttribute("postComments", post.getComments());
         return "show-post";
     }
 

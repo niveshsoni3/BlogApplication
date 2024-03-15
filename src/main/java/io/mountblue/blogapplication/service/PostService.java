@@ -11,4 +11,5 @@ public interface PostService {
     public Post findById(long id);
     public void removePost(Post post);
     public void updatePost(Post post, String tagList);
+    public void saveByPost(Post post);
 }

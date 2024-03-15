@@ -76,4 +76,9 @@ public class PostServiceImpl implements PostService{
         System.out.println("inside update method");
         postRepository.save(existingPost);
     }
+
+    @Override
+    public void saveByPost(Post post) {
+        postRepository.save(post);
+    }
 }

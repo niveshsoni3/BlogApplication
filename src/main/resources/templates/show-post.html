@@ -12,12 +12,6 @@
             padding: 0;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
         h1 {
             color: #000; /* Black title color */
             text-align: center; /* Center align title */
@@ -61,12 +55,34 @@
 
         <p th:text="${post.content}"></p>
         <div class="buttons">
-        <a class="new-blog-button" th:href="@{/showFormToUpdate(postId=${post.id})}">
+        <a class="new-blog-button" th:href="@{/showPostToUpdate(postId=${post.id})}">
             Update
         </a>
         <a class="new-blog-button" th:href="@{/deletePost(postId=${post.id})}">
             Delete
         </a>
+        </div>
+    </div>
+
+
+    <div>
+        <p>Add a comment below</p>
+        <form action="#" th:action="@{/addComment}" th:object="${comment}" method="post">
+            <textarea name="newComment" id="newComment" th:value="${newComment}"></textarea>
+            <input type="hidden" name="postId" id="postId" th:value="${post.id}">
+            <input type="submit" value="submit">
+        </form>
+        <div class="post-container" th:each="comment : ${post.comments}">
+            <div class="comment-box">
+                <p th:text="${comment.comment}"></p>
+                <a  th:href="@{'/updateComment/' + ${comment.id}}">
+                    Update
+                </a>
+                <a  th:href="@{'/deleteComment/' + ${comment.id}}">
+                    Delete
+                </a>
+
+            </div>
         </div>
     </div>
 </body>
