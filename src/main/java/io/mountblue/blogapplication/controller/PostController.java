@@ -1,5 +1,6 @@
 package io.mountblue.blogapplication.controller;
 
+import io.mountblue.blogapplication.model.Comment;
 import io.mountblue.blogapplication.model.Post;
 import io.mountblue.blogapplication.model.Tag;
 import io.mountblue.blogapplication.service.PostService;
@@ -25,7 +26,7 @@ public class PostController {
 
     @GetMapping("/")
     public String getAllBlog(Model model){
-        List<Post> posts = postService.findAll();
+        List<Post> posts = postService.findAllInDesc();
         model.addAttribute("posts", posts);
         return "homepage";
     }
@@ -55,7 +56,7 @@ public class PostController {
         List<Tag> tagList = post.getTags();
         String tagString = "";
         for(Tag tag : tagList){
-            tagString += tag.getName() + ", ";
+            tagString += tag.getName() + " ,";
         }
         model.addAttribute("tagList", tagString);
         return "add-post";
@@ -73,7 +74,15 @@ public class PostController {
         Post post = postService.findById(id);
         model.addAttribute("post", post);
         model.addAttribute("postComments", post.getComments());
+        model.addAttribute("comment", new Comment());
         return "show-post";
+    }
+
+    @GetMapping("/oldest")
+    public String sortByOldest(Model model){
+        List<Post> sortByOldestListPosts = postService.findAllInAsc();
+        model.addAttribute("posts", sortByOldestListPosts);
+        return "homepage";
     }
 
 }

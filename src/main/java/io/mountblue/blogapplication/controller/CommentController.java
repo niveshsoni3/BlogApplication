@@ -21,24 +21,44 @@ public class CommentController {
     }
 
     @PostMapping("/addComment")
-    public String addComment(@ModelAttribute("comment") Comment comment, @RequestParam("postId") long postId, @RequestParam("newComment") String newComment){
-        Post post = postService.findById(postId);
-        List<Comment> postComments = post.getComments();
-        Comment comment1 = new Comment();
-        comment1.setPost(post);
-        comment1.setComment(newComment);
-        postComments.add(comment1);
-        post.setComments(postComments);
-        postService.saveByPost(post);
-        return "redirect:/post/" + postId;
+    public String addComment(@ModelAttribute("comment") Comment comment,
+                             @RequestParam("postId") long postId,
+                             @RequestParam("newComment") String newComment){
+        System.out.println(comment.getComment() + " comment value");
+        if(comment.getId() != null){
+            Comment comment1 = commentService.findById(comment.getId());
+            comment1.setComment(newComment);
+            commentService.save(comment1);
+            return "redirect:/post/" + postId;
+        } else {
+            Post post = postService.findById(postId);
+            List<Comment> postComments = post.getComments();
+            Comment comment1 = new Comment();
+            comment1.setPost(post);
+            comment1.setComment(newComment);
+            postComments.add(comment1);
+            post.setComments(postComments);
+            postService.saveByPost(post);
+            return "redirect:/post/" + postId;
+        }
     }
 
     @GetMapping("/deleteComment/{commentId}")
-    public String deleteAComment(@PathVariable("commentId") long commentId, Model model){
+    public String deleteAComment(@PathVariable("commentId") long commentId){
         Comment comment = commentService.findById(commentId);
         Post post = postService.findById(comment.getPost().getId());
         commentService.deleteComment(comment);
-        model.addAttribute("post", post);
         return "redirect:/post/" + post.getId();
+    }
+
+    @GetMapping("/updateComment/{commentId}")
+    public String updateAComment(@PathVariable("commentId") long commentId, Model model){
+        Comment comment = commentService.findById(commentId);
+        Post post = postService.findById(comment.getPost().getId());
+        model.addAttribute("post", post);
+        model.addAttribute("comment", comment);
+        model.addAttribute("newComment", comment.getComment());
+        System.out.println(comment.getComment());
+        return "show-post";
     }
 }

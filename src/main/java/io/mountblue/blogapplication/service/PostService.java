@@ -6,7 +6,8 @@ import io.mountblue.blogapplication.model.Tag;
 import java.util.List;
 
 public interface PostService {
-    public List<Post> findAll();
+    public List<Post> findAllInAsc();
+    public List<Post> findAllInDesc();
     public void save(Post post, String tagList,  boolean action);
     public Post findById(long id);
     public void removePost(Post post);

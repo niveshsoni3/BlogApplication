@@ -19,15 +19,39 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<Post> findAll() {
-        List<Post> posts = postRepository.findAll();
+    public List<Post> findAllInAsc() {
+        List<Post> posts = postRepository.findAllByOrderByPublishedAtAsc();
+        return posts;
+    }
+
+    @Override
+    public List<Post> findAllInDesc() {
+        List<Post> posts = postRepository.findAllByOrderByPublishedAtDesc();
         return posts;
     }
 
     @Override
     public void save(Post post, String tagList, boolean action) {
-        List<Tag> tags = tagService.covertStringToTagType(tagList);
-        post.setTags(tags);
+        String[] newTagNames = tagList.split(",");
+        List<Tag> existingTags = tagService.findAll();
+        Map<String, Tag> allTagsByName = new HashMap<>();
+        for (Tag tag : existingTags) {
+            allTagsByName.put(tag.getName(), tag);
+        }
+        List<Tag> updatedTags = new ArrayList<>();
+        for (String tagName : newTagNames) {
+            Tag tag = allTagsByName.get(tagName.trim());
+            if (tag == null) {
+                tag = new Tag(tagName.trim());
+            }
+            updatedTags.add(tag);
+        }
+        if(post.getContent().length() > 150){
+            post.setExcerpt(post.getContent().substring(0, 149));
+        } else {
+            post.setExcerpt(post.getContent());
+        }
+        post.setTags(updatedTags);
         post.setCreatedAt(LocalDateTime.now());
         if (action) {
             post.setPublished(true);
@@ -54,16 +78,16 @@ public class PostServiceImpl implements PostService{
         existingPost.setContent(post.getContent());
         existingPost.setUpdatedAt(LocalDateTime.now());
         String[] updatedTagNames = tagList.split(",");
-        Collection<Tag> existingTags = existingPost.getTags();
+        List<Tag> existingTags = tagService.findAll();
         Map<String, Tag> existingTagsByName = new HashMap<>();
         for (Tag tag : existingTags) {
             existingTagsByName.put(tag.getName(), tag);
         }
         List<Tag> updatedTags = new ArrayList<>();
         for (String tagName : updatedTagNames) {
-            Tag tag = existingTagsByName.get(tagName);
+            Tag tag = existingTagsByName.get(tagName.trim());
             if (tag == null) {
-                tag = new Tag(tagName);
+                tag = new Tag(tagName.trim());
             }
             updatedTags.add(tag);
         }
@@ -73,7 +97,6 @@ public class PostServiceImpl implements PostService{
         existingPost.getTags().addAll(tagsToAdd);
         existingPost.getTags().removeAll(tagsToRemove);
         existingPost.setTags(updatedTags);
-        System.out.println("inside update method");
         postRepository.save(existingPost);
     }
 

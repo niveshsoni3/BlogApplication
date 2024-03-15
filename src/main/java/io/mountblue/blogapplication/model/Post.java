@@ -13,7 +13,6 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-@ToString
 @Table(name = "posts")
 public class Post {
     @Id

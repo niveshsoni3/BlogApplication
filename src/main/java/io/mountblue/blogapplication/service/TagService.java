@@ -9,4 +9,8 @@ public interface TagService {
     public List<Tag> removeDuplicateTags(List<Tag> tags);
 
     List<Tag> covertStringToTagType(String tagList);
+
+    List<Tag> findAll();
+
+    Tag findByName(String tagName);
 }
