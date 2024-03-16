@@ -71,12 +71,12 @@
         <textarea id="content" th:field="*{content}" required></textarea>
         <br>
 
-        <th:block th:if="${post.id == null}">
-            <button type="submit" name="action" value="true">Publish</button>
-            <button type="submit" name="action" value="false">Save as Draft</button>
+        <th:block th:if="${post.id != null}">
+            <button type="submit" name="action" th:value="${post.isPublished}">Update</button>
         </th:block>
         <th:block th:else>
-            <button type="submit" name="action" th:value="${post.isPublished}">Update</button>
+            <button type="submit" name="action" value="true">Publish</button>
+            <button type="submit" name="action" value="false">Save as Draft</button>
         </th:block>
     </form>
 </body>

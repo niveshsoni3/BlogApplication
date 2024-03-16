@@ -25,17 +25,16 @@ public class PostController {
     }
 
     @GetMapping("/")
-    public String getAllBlog(Model model){
-        List<Post> posts = postService.findAllInDesc();
-        model.addAttribute("posts", posts);
+    public String getAllBlog(@RequestParam(name = "sortingOption", defaultValue = "newest") String sortingOption, Model model){
+        if(sortingOption.equals("oldest")){
+            List<Post> posts = postService.findAllInAsc();
+            model.addAttribute("posts", posts);
+        } else {
+            List<Post> posts = postService.findAllInDesc();
+            model.addAttribute("posts", posts);
+        }
+        model.addAttribute("currentPageUrl", "/");
         return "homepage";
-    }
-
-    @GetMapping("/newpost")
-    public String showPostForm(Model model){
-        Post post = new Post();
-        model.addAttribute("post", post);
-        return "add-post";
     }
 
     @PostMapping("/create")
@@ -78,17 +77,21 @@ public class PostController {
         return "show-post";
     }
 
-    @GetMapping("/oldest")
-    public String sortByOldest(Model model){
-        List<Post> sortByOldestListPosts = postService.findAllInAsc();
-        model.addAttribute("posts", sortByOldestListPosts);
-        return "homepage";
-    }
-
     @GetMapping("/search")
-    public String search(@RequestParam("searchString") String searchString, Model model){
-        List<Post> postsBasedOnSearch = postService.searchPostsByKeyword(searchString);
-        model.addAttribute("posts", postsBasedOnSearch);
+    public String search(@RequestParam("sortingOption") String sortingOption,
+                         @RequestParam("searchString") String searchString,
+                         Model model){
+        if(sortingOption.equals("newest")){
+            List<Post> postsBasedOnSearch = postService.searchPostsByKeywordInDesc(searchString);
+            model.addAttribute("posts", postsBasedOnSearch);
+            model.addAttribute("searchString", searchString);
+        } else {
+            List<Post> postsBasedOnSearch = postService.searchPostsByKeywordInAsc(searchString);
+            model.addAttribute("posts", postsBasedOnSearch);
+            model.addAttribute("searchString", searchString);
+        }
+        model.addAttribute("currentPageUrl", "/search");
+
         return "homepage";
     }
 

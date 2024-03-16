@@ -7,5 +7,7 @@ public interface CommentService {
 
     public void deleteComment(Comment comment);
 
-    public void save(Comment comment);
+    public void updateComment(Comment comment, String newComment);
+
+    public void saveNewComment(long postId, String newComment);
 }

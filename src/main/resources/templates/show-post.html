@@ -86,6 +86,7 @@
         <p th:text="${'Created at: ' + post.publishedAt}"></p><br>
 
         <p th:text="${post.content}"></p>
+        <p th:text="${post.tags}"></p>
         <div class="buttons">
         <a class="new-blog-button" th:href="@{/showPostToUpdate(postId=${post.id})}">
             Update

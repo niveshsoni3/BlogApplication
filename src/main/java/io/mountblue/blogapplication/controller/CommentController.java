@@ -24,21 +24,11 @@ public class CommentController {
     public String addComment(@ModelAttribute("comment") Comment comment,
                              @RequestParam("postId") long postId,
                              @RequestParam("newComment") String newComment){
-        System.out.println(comment.getComment() + " comment value");
         if(comment.getId() != null){
-            Comment comment1 = commentService.findById(comment.getId());
-            comment1.setComment(newComment);
-            commentService.save(comment1);
+            commentService.updateComment(comment, newComment);
             return "redirect:/post/" + postId;
         } else {
-            Post post = postService.findById(postId);
-            List<Comment> postComments = post.getComments();
-            Comment comment1 = new Comment();
-            comment1.setPost(post);
-            comment1.setComment(newComment);
-            postComments.add(comment1);
-            post.setComments(postComments);
-            postService.saveByPost(post);
+            commentService.saveNewComment(postId, newComment);
             return "redirect:/post/" + postId;
         }
     }
@@ -58,7 +48,6 @@ public class CommentController {
         model.addAttribute("post", post);
         model.addAttribute("comment", comment);
         model.addAttribute("newComment", comment.getComment());
-        System.out.println(comment.getComment());
         return "show-post";
     }
 }

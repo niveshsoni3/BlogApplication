@@ -59,15 +59,20 @@
     </a>
     <div class="search">
         <form action="#" th:action="@{/search}" method="get">
+        <input type="hidden" name="sortingOption" th:value="newest">
         <input type="text" name="searchString" id="searchString" th:value="${searchString}" placeholder="Search anything here..." >
         <input type="submit" value="search">
         </form>
     </div>
-    <select onchange="window.location.href=this.value">
-        <option selected disabled>Select Sorting</option>
-        <option th:value="@{/}">Newest</option>
-        <option th:value="@{/oldest}">Oldest</option>
-    </select>
+    <form th:action="@{${currentPageUrl}}" method="get">
+        <input type="hidden" name="searchString" th:value="${searchString}">
+        <select name="sortingOption" onchange="this.form.submit()">
+            <option value="" selected disabled>Select Sorting</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+        </select>
+    </form>
+
 
     <div class="post-list">
         <div class="post-container" th:each="post : ${posts}">
@@ -78,7 +83,9 @@
 
                 <p>Published Date: <span th:text="${post.publishedAt}"></span></p>
 
-                <p th:text="${post.content}"></p>
+                <p th:text="${post.excerpt}"></p>
+
+                <p th:text="${post.tags}"></p>
             </a>
         </div>
     </div>

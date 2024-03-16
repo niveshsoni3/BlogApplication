@@ -20,6 +20,18 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "WHERE p.title LIKE CONCAT('%', :keyword, '%') " +
             "   OR p.content LIKE CONCAT('%', :keyword, '%') " +
             "   OR a.name LIKE CONCAT('%', :keyword, '%') " +
-            "   OR t.name LIKE CONCAT('%', :keyword, '%')")
-    List<Post> searchPostsByKeyword(String keyword);
+            "   OR t.name LIKE CONCAT('%', :keyword, '%')" +
+            "ORDER BY p.publishedAt DESC")
+    List<Post> searchPostsByKeywordOrderByPublishedAtDesc(String keyword);
+
+    @Query("SELECT p " +
+            "FROM Post p " +
+            "LEFT JOIN FETCH p.author a " +
+            "LEFT JOIN FETCH p.tags t " +
+            "WHERE p.title LIKE CONCAT('%', :keyword, '%') " +
+            "   OR p.content LIKE CONCAT('%', :keyword, '%') " +
+            "   OR a.name LIKE CONCAT('%', :keyword, '%') " +
+            "   OR t.name LIKE CONCAT('%', :keyword, '%')" +
+            "ORDER BY p.publishedAt ASC")
+    List<Post> searchPostsByKeywordOrderByPublishedAtAsc(String keyword);
 }

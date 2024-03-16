@@ -106,7 +106,12 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<Post> searchPostsByKeyword(String keyword) {
-        return postRepository.searchPostsByKeyword(keyword);
+    public List<Post> searchPostsByKeywordInDesc(String keyword) {
+        return postRepository.searchPostsByKeywordOrderByPublishedAtDesc(keyword);
+    }
+
+    @Override
+    public List<Post> searchPostsByKeywordInAsc(String keyword) {
+        return postRepository.searchPostsByKeywordOrderByPublishedAtAsc(keyword);
     }
 }
