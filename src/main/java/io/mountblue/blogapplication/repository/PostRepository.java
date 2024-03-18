@@ -34,4 +34,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "   OR t.name LIKE CONCAT('%', :keyword, '%')" +
             "ORDER BY p.publishedAt ASC")
     List<Post> searchPostsByKeywordOrderByPublishedAtAsc(String keyword);
+
+    List<Post> findByTagsIn(List<Long> tagIds);
 }

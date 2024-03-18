@@ -53,12 +53,21 @@
 <div class="container">
     <h1>My Blog Application</h1>
     <hr>
-
+    <div class="filter-list">
+        <form th:action="@{/filters}" method="get">
+            <div class="tag-filter" th:each="tag : ${allTags}">
+                    <span th:if="${selectedTags.contains(tag)}"> </span>
+                    <span th:text="${tag.name}"></span>
+                    <input type="checkbox" name="selectedTags" th:value="${tag.id}" th:checked="${selectedTags.contains(tag)}" />
+            </div>
+            <input type="submit" value="Apply filter">
+        </form>
+    </div>
     <a class="new-blog-button" th:href="@{/newpost}">
         Create new blog
     </a>
     <div class="search">
-        <form action="#" th:action="@{/search}" method="get">
+        <form th:action="@{/search}" method="get">
         <input type="hidden" name="sortingOption" th:value="newest">
         <input type="text" name="searchString" id="searchString" th:value="${searchString}" placeholder="Search anything here..." >
         <input type="submit" value="search">

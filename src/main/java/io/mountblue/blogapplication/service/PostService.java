@@ -15,4 +15,5 @@ public interface PostService {
     public void saveByPost(Post post);
     public List<Post> searchPostsByKeywordInDesc(String keyword);
     public List<Post> searchPostsByKeywordInAsc(String keyword);
+    public List<Post> findByTags(List<Long> tagIds);
 }

@@ -114,4 +114,9 @@ public class PostServiceImpl implements PostService{
     public List<Post> searchPostsByKeywordInAsc(String keyword) {
         return postRepository.searchPostsByKeywordOrderByPublishedAtAsc(keyword);
     }
+
+    @Override
+    public List<Post> findByTags(List<Long> tagIds) {
+        return postRepository.findByTagsIn(tagIds);
+    }
 }

@@ -13,4 +13,6 @@ public interface TagService {
     List<Tag> findAll();
 
     Tag findByName(String tagName);
+
+    List<Tag> findByIds(List<Long> ids);
 }

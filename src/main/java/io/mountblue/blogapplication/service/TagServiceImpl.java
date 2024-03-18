@@ -58,4 +58,10 @@ public class TagServiceImpl implements TagService{
     public Tag findByName(String tagName) {
         return tagRepository.findByName(tagName);
     }
+
+    @Override
+    public List<Tag> findByIds(List<Long> ids) {
+        return tagRepository.findByIds(ids);
+    }
+
 }

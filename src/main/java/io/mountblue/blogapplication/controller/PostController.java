@@ -9,10 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 @Controller
@@ -34,6 +31,9 @@ public class PostController {
             model.addAttribute("posts", posts);
         }
         model.addAttribute("currentPageUrl", "/");
+        List<Tag> allTags = tagService.findAll();
+        model.addAttribute("allTags", allTags );
+        model.addAttribute("selectedTags", new ArrayList<Tag>());
         return "homepage";
     }
 
@@ -95,5 +95,17 @@ public class PostController {
         return "homepage";
     }
 
-
+    @GetMapping("/filters")
+    public String filters(@RequestParam(name = "selectedTags" , required = false) List<Long>  selectedTags, Model model){
+        if(selectedTags == null){
+            return "redirect:/";
+        }
+        List<Tag> selectedTagsObject = tagService.findByIds(selectedTags);
+        List<Post> posts = postService.findByTags(selectedTags);
+        List<Tag> allTags = tagService.findAll();
+        model.addAttribute("allTags", allTags );
+        model.addAttribute("selectedTags", selectedTagsObject);
+        model.addAttribute("posts", posts);
+        return "homepage";
+    }
 }
