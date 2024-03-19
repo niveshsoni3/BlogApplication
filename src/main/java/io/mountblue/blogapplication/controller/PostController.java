@@ -3,14 +3,17 @@ package io.mountblue.blogapplication.controller;
 import io.mountblue.blogapplication.model.Comment;
 import io.mountblue.blogapplication.model.Post;
 import io.mountblue.blogapplication.model.Tag;
+import io.mountblue.blogapplication.model.User;
 import io.mountblue.blogapplication.service.PostService;
 import io.mountblue.blogapplication.service.TagService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class PostController {
@@ -35,6 +38,13 @@ public class PostController {
         model.addAttribute("allTags", allTags );
         model.addAttribute("selectedTags", new ArrayList<Tag>());
         return "homepage";
+    }
+
+    @GetMapping("/newpost")
+    public String showPostForm(Model model){
+        Post post = new Post();
+        model.addAttribute("post", post);
+        return "add-post";
     }
 
     @PostMapping("/create")
@@ -96,16 +106,19 @@ public class PostController {
     }
 
     @GetMapping("/filters")
-    public String filters(@RequestParam(name = "selectedTags" , required = false) List<Long>  selectedTags, Model model){
-        if(selectedTags == null){
-            return "redirect:/";
-        }
-        List<Tag> selectedTagsObject = tagService.findByIds(selectedTags);
-        List<Post> posts = postService.findByTags(selectedTags);
+    public String filters(@RequestParam(name = "selectedAuthor", required = false) List<User> selectedAuthors,
+                          @RequestParam(name = "publishedFrom", required = false) String publishedFrom,
+                          @RequestParam(name = "publishedTo", required = false) String publishedTo,
+                          @RequestParam(name = "selectedTags" , required = false) List<Long>  selectedTags,
+                          Model model){
+        Set<Tag> selectedTagsObject = tagService.findByIds(selectedTags);
+        List<Post> posts = postService.findByAuthorsDateAndTags( selectedAuthors,publishedFrom, publishedTo, selectedTags);
         List<Tag> allTags = tagService.findAll();
         model.addAttribute("allTags", allTags );
         model.addAttribute("selectedTags", selectedTagsObject);
         model.addAttribute("posts", posts);
+        model.addAttribute("publishedFrom", publishedFrom);
+        model.addAttribute("publishedTo", publishedTo);
         return "homepage";
     }
 }

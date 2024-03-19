@@ -1,11 +1,13 @@
 package io.mountblue.blogapplication.repository;
 
 import io.mountblue.blogapplication.model.Post;
+import io.mountblue.blogapplication.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -35,5 +37,15 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "ORDER BY p.publishedAt ASC")
     List<Post> searchPostsByKeywordOrderByPublishedAtAsc(String keyword);
 
-    List<Post> findByTagsIn(List<Long> tagIds);
+    @Query("SELECT p FROM Post p " +
+            "LEFT JOIN p.tags t " +
+            "LEFT JOIN p.author a " +
+            "WHERE (:authorIds IS NULL OR a.id IN :authorIds) " +
+            "AND (:fromDate IS NULL OR :toDate IS NULL OR p.publishedAt BETWEEN :fromDate AND :toDate) " +
+            "AND (:tags IS NULL OR t.id IN (:tags)) " +
+            "GROUP BY p.id")
+    List<Post> findByAuthorsDateAndTags( List<User> authorIds,
+                                         LocalDateTime fromDate,
+                                         LocalDateTime toDate,
+                                         List<Long> tags);
 }

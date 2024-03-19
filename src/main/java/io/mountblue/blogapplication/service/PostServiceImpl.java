@@ -2,10 +2,14 @@ package io.mountblue.blogapplication.service;
 
 import io.mountblue.blogapplication.model.Post;
 import io.mountblue.blogapplication.model.Tag;
+import io.mountblue.blogapplication.model.User;
 import io.mountblue.blogapplication.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -116,7 +120,17 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<Post> findByTags(List<Long> tagIds) {
-        return postRepository.findByTagsIn(tagIds);
+    public List<Post> findByAuthorsDateAndTags(List<User> authorIds, String fromDateString, String toDateString, List<Long> tags) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateFromDate = LocalDate.parse(fromDateString, formatter);
+        LocalDate dateToDate = LocalDate.parse(toDateString, formatter);
+        String fromTimeString = "00:00:00";
+        String toTimeString = "23:59:59";
+        LocalTime fromParsedTime = LocalTime.parse(fromTimeString, DateTimeFormatter.ofPattern("HH:mm:ss"));
+        LocalTime toParsedTime = LocalTime.parse(toTimeString, DateTimeFormatter.ofPattern("HH:mm:ss"));
+        LocalDateTime fromDate = LocalDateTime.of(dateFromDate, fromParsedTime);
+        LocalDateTime toDate = LocalDateTime.of(dateToDate, toParsedTime);
+        return postRepository.findByAuthorsDateAndTags(authorIds,fromDate,toDate,tags);
     }
 }

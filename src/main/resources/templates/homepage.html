@@ -55,11 +55,26 @@
     <hr>
     <div class="filter-list">
         <form th:action="@{/filters}" method="get">
+            <p>Tags</p>
             <div class="tag-filter" th:each="tag : ${allTags}">
                     <span th:if="${selectedTags.contains(tag)}"> </span>
-                    <span th:text="${tag.name}"></span>
                     <input type="checkbox" name="selectedTags" th:value="${tag.id}" th:checked="${selectedTags.contains(tag)}" />
+                    <span th:text="${tag.name}"></span>
             </div>
+            <!--<p>Author</p>
+            <div class="author-filter" th:each="author : ${allAuthor}">
+                <span th:if="${selectedAuthor.contains(author)}"> </span>
+                <span th:text="${author.name}"></span>
+                <input type="checkbox" name="selectedAuthors" th:value="${author.id}" th:checked="${selectedAuthor.contains(author)}" />
+            </div>-->
+            <div class="date-filter">
+                <label>From:</label>
+                <input type="date" th:value="${publishedFrom}" name="publishedFrom" >
+                <label>To:</label>
+                <input type="date" th:value="${publishedTo}" name="publishedTo" >
+
+            </div>
+
             <input type="submit" value="Apply filter">
         </form>
     </div>

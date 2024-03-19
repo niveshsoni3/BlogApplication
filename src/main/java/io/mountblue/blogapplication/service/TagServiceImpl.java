@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TagServiceImpl implements TagService{
@@ -60,7 +61,7 @@ public class TagServiceImpl implements TagService{
     }
 
     @Override
-    public List<Tag> findByIds(List<Long> ids) {
+    public Set<Tag> findByIds(List<Long> ids) {
         return tagRepository.findByIds(ids);
     }
 

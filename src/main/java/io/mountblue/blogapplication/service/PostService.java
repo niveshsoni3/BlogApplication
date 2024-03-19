@@ -2,7 +2,9 @@ package io.mountblue.blogapplication.service;
 
 import io.mountblue.blogapplication.model.Post;
 import io.mountblue.blogapplication.model.Tag;
+import io.mountblue.blogapplication.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PostService {
@@ -15,5 +17,5 @@ public interface PostService {
     public void saveByPost(Post post);
     public List<Post> searchPostsByKeywordInDesc(String keyword);
     public List<Post> searchPostsByKeywordInAsc(String keyword);
-    public List<Post> findByTags(List<Long> tagIds);
+    public List<Post> findByAuthorsDateAndTags(List<User> authorIds, String fromDate, String toDate, List<Long> tags);
 }

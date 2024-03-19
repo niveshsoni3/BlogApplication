@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
@@ -15,5 +16,5 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     public Tag findByName(String tagName);
 
     @Query("SELECT t FROM Tag t WHERE t.id IN :Ids")
-    public List<Tag> findByIds(List<Long> Ids);
+    public Set<Tag> findByIds(List<Long> Ids);
 }
