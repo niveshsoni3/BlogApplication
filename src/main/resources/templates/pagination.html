@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>My Blog Application</title>
+    <title>Blog Post Application</title>
     <style>
         .container {
             max-width: 800px;
@@ -55,14 +55,14 @@
     <hr>
     <div class="filter-list">
         <form th:action="@{/filters}" method="get">
-            <a th:href="@{/pagination(start = 0, limit = 10)}">
-                Navigate to pagination page
+            <a   th:href="@{/}">
+                Return to homepage
             </a>
             <h4>Tags</h4>
             <div class="tag-filter" th:each="tag : ${allTags}">
-                    <span th:if="${selectedTags.contains(tag)}"> </span>
-                    <input type="checkbox" name="selectedTags" th:value="${tag.id}" th:checked="${selectedTags.contains(tag)}" />
-                    <span th:text="${tag.name}"></span>
+                <span th:if="${selectedTags.contains(tag)}"> </span>
+                <input type="checkbox" name="selectedTags" th:value="${tag.id}" th:checked="${selectedTags.contains(tag)}" />
+                <span th:text="${tag.name}"></span>
             </div>
             <!--<p>Author</p>
             <div class="author-filter" th:each="author : ${allAuthor}">
@@ -86,9 +86,9 @@
     </a>
     <div class="search">
         <form th:action="@{/search}" method="get">
-        <input type="hidden" name="sortingOption" th:value="newest">
-        <input type="text" name="searchString" id="searchString" th:value="${searchString}" placeholder="Search anything here..." >
-        <input type="submit" value="search">
+            <input type="hidden" name="sortingOption" th:value="newest">
+            <input type="text" name="searchString" id="searchString" th:value="${searchString}" placeholder="Search anything here..." >
+            <input type="submit" value="search">
         </form>
     </div>
     <form th:action="@{${currentPageUrl}}" method="get">
@@ -116,6 +116,8 @@
             </a>
         </div>
     </div>
+    <a th:if="${start > 0}" th:href="@{/pagination(start=${(start ?: 0) - (limit ?: 10)}, limit=${limit ?: 10})}">Previous</a>
+    <a th:href="@{/pagination(start=${start ?: 0} + ${limit ?: 10}, limit=${limit ?: 10})}">Next</a>
 </div>
 </body>
 </html>

@@ -4,6 +4,10 @@ import io.mountblue.blogapplication.model.Post;
 import io.mountblue.blogapplication.model.Tag;
 import io.mountblue.blogapplication.model.User;
 import io.mountblue.blogapplication.repository.PostRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -121,7 +125,6 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public List<Post> findByAuthorsDateAndTags(List<User> authorIds, String fromDateString, String toDateString, List<Long> tags) {
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateFromDate = LocalDate.parse(fromDateString, formatter);
         LocalDate dateToDate = LocalDate.parse(toDateString, formatter);
@@ -133,4 +136,14 @@ public class PostServiceImpl implements PostService{
         LocalDateTime toDate = LocalDateTime.of(dateToDate, toParsedTime);
         return postRepository.findByAuthorsDateAndTags(authorIds,fromDate,toDate,tags);
     }
+
+    @Override
+    public List<Post> findPostsWithPagination(Integer start, Integer limit) {
+
+        Pageable pageable = PageRequest.of(start/limit, limit, Sort.by("publishedAt").descending());
+        Page<Post> postPage = postRepository.findAll(pageable);
+        return postPage.getContent();
+    }
+
+
 }

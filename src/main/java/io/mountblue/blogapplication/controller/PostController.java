@@ -121,4 +121,17 @@ public class PostController {
         model.addAttribute("publishedTo", publishedTo);
         return "homepage";
     }
+
+    @GetMapping("/pagination")
+    public String pagination(@RequestParam(value = "start", defaultValue = "0", required = false) Integer start,
+                             @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit,
+                             Model model){
+        System.out.println(start + " " + limit);
+        List<Post> posts = postService.findPostsWithPagination(start, limit);
+        System.out.println(posts.size());
+        model.addAttribute("posts", posts);
+        model.addAttribute("start", start);
+        model.addAttribute("limit", limit);
+        return "pagination";
+    }
 }
