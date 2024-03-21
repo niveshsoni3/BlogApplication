@@ -6,19 +6,18 @@ import io.mountblue.blogapplication.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public interface PostService {
-    List<Post> findAllInAsc();
-    List<Post> findAllInDesc();
+    List<Post> findAll(Integer start, Integer limit, String sortType);
     void save(Post post, String tagList,  boolean action);
+    void saveByPost(Post post);
+    void updatePost(Post post, String tagList);
     Post findById(long id);
     void removePost(Post post);
-    void updatePost(Post post, String tagList);
-    void saveByPost(Post post);
-    List<Post> searchPostsByKeywordInDesc(String keyword);
-    List<Post> searchPostsByKeywordInAsc(String keyword);
-    List<Post> findByAuthorsDateAndTags(List<User> authorIds, String fromDate, String toDate, List<Long> tags);
-    List<Post> findPostsWithPagination(Integer start, Integer limit);
+    List<Post> searchAndFilterPostsByKeyword(String keyword, List<User> authorIds, String fromDateString,
+                                             String toDateString, List<Long> tags, Integer start, Integer limit, String sortType);
+    List<Post> searchByTitleContentTagsAndAuthorName(String searchString, String sortType, Integer start, Integer limit);
 
 
 }

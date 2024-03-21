@@ -3,93 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>My Blog Application</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <style>
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
 
-        .post-container {
-            width: calc(50% - 20px); /* Two posts per line with margin */
-            background-color: #f8f8f8;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            padding: 15px;
-            box-sizing: border-box; /* Include padding in width calculation */
-            float: left; /* Float left to display two posts per line */
-        }
-
-        .post-container a {
-            text-decoration: none;
-            color: black;
-        }
-
-        .post-container h2 {
-            margin-top: 0;
-        }
-
-        .post-container p {
-            margin-bottom: 10px;
-        }
-
-        .new-blog-button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: black;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        .new-blog-button:hover {
-            background-color: #333;
-        }
 
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>My Blog Application</h1>
+    <header>
+        <h1>My Blog Application</h1>
+    </header>
+
     <hr>
-    <div class="filter-list">
-        <form th:action="@{/filters}" method="get">
-            <a th:href="@{/pagination(start = 0, limit = 10)}">
-                Navigate to pagination page
+
+    <div>
+
+        <div class=" link-button">
+            <a class="new-blog-button" th:href="@{/newPost}">
+                Create new blog
             </a>
-            <h4>Tags</h4>
-            <div class="tag-filter" th:each="tag : ${allTags}">
-                    <span th:if="${selectedTags.contains(tag)}"> </span>
-                    <input type="checkbox" name="selectedTags" th:value="${tag.id}" th:checked="${selectedTags.contains(tag)}" />
-                    <span th:text="${tag.name}"></span>
-            </div>
-            <!--<p>Author</p>
-            <div class="author-filter" th:each="author : ${allAuthor}">
-                <span th:if="${selectedAuthor.contains(author)}"> </span>
-                <span th:text="${author.name}"></span>
-                <input type="checkbox" name="selectedAuthors" th:value="${author.id}" th:checked="${selectedAuthor.contains(author)}" />
-            </div>-->
-            <div class="date-filter">
-                <label>From:</label>
-                <input type="date" th:value="${publishedFrom}" name="publishedFrom" >
-                <label>To:</label>
-                <input type="date" th:value="${publishedTo}" name="publishedTo" >
+        </div>
 
-            </div>
-
-            <input type="submit" value="Apply filter">
-        </form>
-    </div>
-    <a class="new-blog-button" th:href="@{/newpost}">
-        Create new blog
-    </a>
-    <div class="search">
-        <form th:action="@{/search}" method="get">
-        <input type="hidden" name="sortingOption" th:value="newest">
-        <input type="text" name="searchString" id="searchString" th:value="${searchString}" placeholder="Search anything here..." >
-        <input type="submit" value="search">
-        </form>
+        <div class="search">
+            <form th:action="@{/search}" method="get">
+                <input type="hidden" name="sortingOption" th:value="newest">
+                <input type="text" name="searchString" id="searchString" th:value="${searchString}" placeholder="Search anything here..." >
+                <input type="submit" value="search">
+            </form>
+        </div>
     </div>
     <form th:action="@{${currentPageUrl}}" method="get">
         <input type="hidden" name="searchString" th:value="${searchString}">
@@ -100,22 +42,58 @@
         </select>
     </form>
 
+    <div class="list-wrapper">
+        <div class="filter-list">
+            <form th:action="@{/filters}" method="get" class="filter-form">
+                <div class="filter-container">
+                    <div class="date-filter">
+                        <label>From:</label>
+                        <input type="date" th:value="${publishedFrom}" name="publishedFrom" >
+                        <label>To:</label>
+                        <input type="date" th:value="${publishedTo}" name="publishedTo" >
 
-    <div class="post-list">
-        <div class="post-container" th:each="post : ${posts}">
-            <a th:href="@{'/post/' + ${post.id}}">
-                <h2 th:text="${post.title}"></h2>
+                    </div>
 
-                <p>Author: <span th:text="${post.author}"></span></p>
+                    <h4>Tags</h4>
+                    <div class="tag-filter" th:each="tag : ${allTags}">
+                        <span th:if="${selectedTags.contains(tag)}"> </span>
+                        <input type="checkbox" name="selectedTags" th:value="${tag.id}" th:checked="${selectedTags.contains(tag)}" />
+                        <span th:text="${tag.name}"></span>
+                    </div>
+                </div>
+                <!--<p>Author</p>
+                <div class="author-filter" th:each="author : ${allAuthor}">
+                    <span th:if="${selectedAuthor.contains(author)}"> </span>
+                    <span th:text="${author.name}"></span>
+                    <input type="checkbox" name="selectedAuthors" th:value="${author.id}" th:checked="${selectedAuthor.contains(author)}" />
+                </div>-->
+                <input type="hidden" name="searchString" th:value="${searchString}">
+                <input type="submit" value="Apply filter">
+            </form>
+        </div>
 
-                <p>Published Date: <span th:text="${post.publishedAt}"></span></p>
+        <div class="post-list">
+            <div class="post-container" th:each="post : ${posts}">
+                <a th:href="@{'/post/' + ${post.id}}">
+                    <h2 th:text="${post.title}"></h2>
 
-                <p th:text="${post.excerpt}"></p>
+                    <p>Author: <span th:text="${post.author}"></span></p>
 
-                <p th:text="${post.tags}"></p>
-            </a>
+                    <p>Published Date: <span th:text="${post.publishedAt}"></span></p>
+
+                    <p th:text="${post.excerpt}"></p>
+
+                    <p th:text="${post.tags}"></p>
+                </a>
+            </div>
         </div>
     </div>
+    <a class="new-blog-button" th:if="${start > 0}"
+       th:href="@{${currentPageUrl}(start=${(start ?: 0) - (limit ?: 10)}, limit=${limit ?: 10})}">Previous</a>
+    <a class="new-blog-button" th:href="@{${currentPageUrl}(start=${start ?: 0} + ${limit ?: 10}, limit=${limit ?: 10})}">Next</a>
+
+
+
 </div>
 </body>
 </html>

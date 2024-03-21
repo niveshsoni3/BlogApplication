@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,22 +26,22 @@ public class PostController {
     }
 
     @GetMapping("/")
-    public String getAllBlog(@RequestParam(name = "sortingOption", defaultValue = "newest") String sortingOption, Model model){
-        if(sortingOption.equals("oldest")){
-            List<Post> posts = postService.findAllInAsc();
-            model.addAttribute("posts", posts);
-        } else {
-            List<Post> posts = postService.findAllInDesc();
-            model.addAttribute("posts", posts);
-        }
+    public String getAllBlog(@RequestParam(name = "sortingOption", defaultValue = "newest") String sortingOption,
+                             @RequestParam(value = "start", defaultValue = "0", required = false) Integer start,
+                             @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit,
+                             Model model){
+        List<Post> posts = postService.findAll(start, limit, sortingOption);
+        model.addAttribute("posts", posts);
         model.addAttribute("currentPageUrl", "/");
         List<Tag> allTags = tagService.findAll();
         model.addAttribute("allTags", allTags );
         model.addAttribute("selectedTags", new ArrayList<Tag>());
+        model.addAttribute("start", start);
+        model.addAttribute("limit", limit);
         return "homepage";
     }
 
-    @GetMapping("/newpost")
+    @GetMapping("/newPost")
     public String showPostForm(Model model){
         Post post = new Post();
         model.addAttribute("post", post);
@@ -63,11 +64,11 @@ public class PostController {
         Post post = postService.findById(postId);
         model.addAttribute("post", post);
         List<Tag> tagList = post.getTags();
-        String tagString = "";
+        StringBuilder tagString = new StringBuilder();
         for(Tag tag : tagList){
-            tagString += tag.getName() + " ,";
+            tagString.append(tag.getName()).append(" ,");
         }
-        model.addAttribute("tagList", tagString);
+        model.addAttribute("tagList", tagString.toString());
         return "add-post";
     }
 
@@ -88,50 +89,44 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public String search(@RequestParam("sortingOption") String sortingOption,
-                         @RequestParam("searchString") String searchString,
-                         Model model){
-        if(sortingOption.equals("newest")){
-            List<Post> postsBasedOnSearch = postService.searchPostsByKeywordInDesc(searchString);
-            model.addAttribute("posts", postsBasedOnSearch);
-            model.addAttribute("searchString", searchString);
-        } else {
-            List<Post> postsBasedOnSearch = postService.searchPostsByKeywordInAsc(searchString);
-            model.addAttribute("posts", postsBasedOnSearch);
-            model.addAttribute("searchString", searchString);
-        }
+    public String filters(@RequestParam(value = "sortingOption", defaultValue = "newest") String sortingOption,
+                          @RequestParam(value = "start", defaultValue = "0", required = false) Integer start,
+                          @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit,
+                          @RequestParam("searchString") String searchString,
+                          Model model){
+        List<Post> posts = postService.searchByTitleContentTagsAndAuthorName(searchString, sortingOption, start, limit);
+        List<Tag> allTags = tagService.findAll();
+        model.addAttribute("allTags", allTags );
+        model.addAttribute("posts", posts);
+        model.addAttribute("start", start);
+        model.addAttribute("limit", limit);
+        model.addAttribute("searchString", searchString);
+        model.addAttribute("selectedTags", new HashSet<Tag>());
         model.addAttribute("currentPageUrl", "/search");
-
         return "homepage";
     }
 
     @GetMapping("/filters")
-    public String filters(@RequestParam(name = "selectedAuthor", required = false) List<User> selectedAuthors,
-                          @RequestParam(name = "publishedFrom", required = false) String publishedFrom,
-                          @RequestParam(name = "publishedTo", required = false) String publishedTo,
-                          @RequestParam(name = "selectedTags" , required = false) List<Long>  selectedTags,
-                          Model model){
-        Set<Tag> selectedTagsObject = tagService.findByIds(selectedTags);
-        List<Post> posts = postService.findByAuthorsDateAndTags( selectedAuthors,publishedFrom, publishedTo, selectedTags);
+    public String search(@RequestParam(value = "sortingOption", defaultValue = "newest") String sortingOption,
+                         @RequestParam("searchString") String searchString,
+                         @RequestParam(name = "selectedAuthor", required = false) List<User> selectedAuthors,
+                         @RequestParam(name = "publishedFrom", required = false) String publishedFrom,
+                         @RequestParam(name = "publishedTo", required = false) String publishedTo,
+                         @RequestParam(name = "selectedTags" , required = false) List<Long>  selectedTags,
+                         @RequestParam(value = "start", defaultValue = "0", required = false) Integer start,
+                         @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit,
+                         Model model){
+        List<Tag> selectedTagsObject = tagService.findByIds(selectedTags);
+        List<Post> postsBasedOnSearch = postService.searchAndFilterPostsByKeyword(searchString, selectedAuthors,
+        publishedFrom, publishedTo, selectedTags, start, limit, sortingOption);
+        model.addAttribute("posts", postsBasedOnSearch);
         List<Tag> allTags = tagService.findAll();
         model.addAttribute("allTags", allTags );
-        model.addAttribute("selectedTags", selectedTagsObject);
-        model.addAttribute("posts", posts);
-        model.addAttribute("publishedFrom", publishedFrom);
-        model.addAttribute("publishedTo", publishedTo);
-        return "homepage";
-    }
-
-    @GetMapping("/pagination")
-    public String pagination(@RequestParam(value = "start", defaultValue = "0", required = false) Integer start,
-                             @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit,
-                             Model model){
-        System.out.println(start + " " + limit);
-        List<Post> posts = postService.findPostsWithPagination(start, limit);
-        System.out.println(posts.size());
-        model.addAttribute("posts", posts);
+        model.addAttribute("selectedTags", selectedTags == null? new ArrayList<Tag>() : selectedTagsObject);
         model.addAttribute("start", start);
         model.addAttribute("limit", limit);
-        return "pagination";
+        model.addAttribute("searchString", searchString);
+        model.addAttribute("currentPageUrl", "/filters");
+        return "homepage";
     }
 }

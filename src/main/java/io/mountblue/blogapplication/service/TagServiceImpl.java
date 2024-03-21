@@ -61,7 +61,7 @@ public class TagServiceImpl implements TagService{
     }
 
     @Override
-    public Set<Tag> findByIds(List<Long> ids) {
+    public List<Tag> findByIds(List<Long> ids) {
         return tagRepository.findByIds(ids);
     }
 

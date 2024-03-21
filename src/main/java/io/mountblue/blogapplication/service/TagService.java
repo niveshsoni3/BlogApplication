@@ -15,5 +15,5 @@ public interface TagService {
 
     Tag findByName(String tagName);
 
-    Set<Tag> findByIds(List<Long> ids);
+    List<Tag> findByIds(List<Long> ids);
 }
