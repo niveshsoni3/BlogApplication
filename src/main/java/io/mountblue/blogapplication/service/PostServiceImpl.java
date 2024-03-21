@@ -28,6 +28,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public List<Post> findAll(Integer start, Integer limit, String sortType) {
+        System.out.println("here");
         if(sortType.equals("oldest")){
             Pageable pageable = PageRequest.of(start/limit, limit, Sort.by("publishedAt").ascending());
             Page<Post> postPage = postRepository.findAll(pageable);
@@ -153,6 +154,9 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public List<Post> searchByTitleContentTagsAndAuthorName(String searchString, String sortType, Integer start, Integer limit) {
+        if(searchString.isEmpty()){
+            return findAll(start, limit, sortType);
+        }
         if(sortType.equals("oldest")){
             Pageable pageable = PageRequest.of(start/limit, limit, Sort.by("publishedAt").ascending());
             Page<Post> postPage = postRepository.searchPostsByKeywordOrderByPublished(searchString, pageable);
