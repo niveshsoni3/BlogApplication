@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
+@ToString
 @Table(name = "posts")
 public class Post {
     @Id
@@ -23,7 +24,7 @@ public class Post {
     private String excerpt;
     @Column(columnDefinition = "TEXT")
     private String content;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "author_id")
     private User author;
     private LocalDateTime publishedAt;
@@ -35,7 +36,6 @@ public class Post {
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags;
-
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "post_id")
     private List<Comment> comments;

@@ -1,7 +1,6 @@
 package io.mountblue.blogapplication.repository;
 
 import io.mountblue.blogapplication.model.Post;
-import io.mountblue.blogapplication.model.Tag;
 import io.mountblue.blogapplication.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,14 +15,15 @@ import java.util.Set;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    @Query("SELECT p " +
+    @Query("SELECT DISTINCT p " +
             "FROM Post p " +
             "LEFT JOIN p.author a " +
             "LEFT JOIN p.tags t " +
-            "WHERE p.title LIKE CONCAT('%', :keyword, '%') " +
-            "   OR p.content LIKE CONCAT('%', :keyword, '%') " +
-            "   OR a.name LIKE CONCAT('%', :keyword, '%') " +
-            "   OR t.name LIKE CONCAT('%', :keyword, '%')")
+            "WHERE (:keyword IS NULL OR " +
+            "p.title LIKE %:keyword% OR " +
+            "p.content LIKE %:keyword% OR " +
+            "a.name LIKE %:keyword% OR " +
+            "t.name LIKE %:keyword%)")
     Page<Post> searchPostsByKeywordOrderByPublished(String keyword, Pageable pageable);
 
     @Query("SELECT p FROM Post p " +
@@ -38,7 +38,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                                          LocalDateTime toDate,
                                          List<Long> tags, Pageable pageable);
 
-    @Query("SELECT p FROM Post p " +
+    @Query("SELECT DISTINCT p FROM Post p " +
             "LEFT JOIN p.tags t " +
             "LEFT JOIN p.author a " +
             "WHERE (:authorIds IS NULL OR a.id IN :authorIds) " +

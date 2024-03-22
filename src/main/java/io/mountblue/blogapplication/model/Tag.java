@@ -23,16 +23,14 @@ public class Tag {
     private String name;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
-
-    public Tag(String name) {
-        this.name = name;
-    }
-
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "post_tags",
             joinColumns = @JoinColumn(name = "tag_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id"))
     private List<Post> posts;
+    public Tag(String name) {
+        this.name = name;
+    }
     @Override
     public String toString() {
         return name;

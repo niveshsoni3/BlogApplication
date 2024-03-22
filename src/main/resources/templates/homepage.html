@@ -38,7 +38,6 @@
         <div class="tag-filter" th:each="tag : ${selectedTags}">
             <span th:if="${selectedTags.contains(tag)}"> </span>
             <input type="hidden" name="selectedTags" th:value="${tag.id}"/>
-            <span th:text="${tag.name}"></span>
         </div>
         <input type="hidden" name="selectedTags" th:each="tag : ${selectedTags}">
         <select name="sortingOption" onchange="this.form.submit()">
@@ -62,7 +61,6 @@
 
                     <h4>Tags</h4>
                     <div class="tag-filter" th:each="tag : ${allTags}">
-                        <span th:if="${selectedTags.contains(tag)}"> </span>
                         <input type="checkbox" name="selectedTags" th:value="${tag.id}" th:checked="${selectedTags.contains(tag)}" />
                         <span th:text="${tag.name}"></span>
                     </div>
@@ -94,9 +92,29 @@
             </div>
         </div>
     </div>
-    <a class="new-blog-button" th:if="${start > 0}"
-       th:href="@{${currentPageUrl}(start=${(start ?: 0) - (limit ?: 10)}, limit=${limit ?: 10})}">Previous</a>
-    <a class="new-blog-button" th:href="@{${currentPageUrl}(start=${start ?: 0} + ${limit ?: 10}, limit=${limit ?: 10})}">Next</a>
+    <form th:action="@{${currentPageUrl}}" method="get">
+        <input type="hidden" name="start" th:value="${start != null ? (start - 1) : 0}" />
+        <input type="hidden" name="limit" th:value="${limit ?: 5}" />
+        <input type="hidden" th:each="tag : ${selectedTags}" name="selectedTags" th:value="${tag.id}" />
+        <input type="hidden" name="searchString" th:value="${searchString}" />
+        <input type="hidden" name="sortingOption" th:value="${sortingOption}" />
+        <button type="submit" th:if="${start > 0}">Previous</button>
+    </form>
+
+    <form th:action="@{${currentPageUrl}}" method="get">
+        <input type="hidden" name="start" th:value="${start != null ? (start + 1) : 0}" />
+        <input type="hidden" name="limit" th:value="${limit ?: 5}" />
+        <input type="hidden" th:each="tag : ${selectedTags}" name="selectedTags" th:value="${tag.id}" />
+        <input type="hidden" name="searchString" th:value="${searchString}" />
+        <input type="hidden" name="sortingOption" th:value="${sortingOption}" />
+        <button type="submit">Next</button>
+    </form>
+
+    <!--<a class="new-blog-button" th:if="${start > 0}"
+       th:href="@{${currentPageUrl}(start = ${start != null ? (start - 1) : 0}, limit=${limit ?: 10},
+        searchString = ${searchString}, selectedTags = ${#strings.listJoin(selectedTags, ',')}, sortingOption = ${sortingOption}, sortingOption = ${sortingOption})}">Previous</a>
+    <a class="new-blog-button" th:href="@{${currentPageUrl}(start = ${start != null ? (start + 1) : 0}, limit=${limit ?: 10},
+        searchString = ${searchString}, selectedTags = ${#strings.listJoin(selectedTags, ',')}, sortingOption = ${sortingOption}, sortingOption = ${sortingOption})}">Next</a>-->
 
 
 

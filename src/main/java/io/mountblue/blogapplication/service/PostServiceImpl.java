@@ -30,11 +30,11 @@ public class PostServiceImpl implements PostService{
     public List<Post> findAll(Integer start, Integer limit, String sortType) {
         System.out.println("here");
         if(sortType.equals("oldest")){
-            Pageable pageable = PageRequest.of(start/limit, limit, Sort.by("publishedAt").ascending());
+            Pageable pageable = PageRequest.of(start, limit, Sort.by("publishedAt").ascending());
             Page<Post> postPage = postRepository.findAll(pageable);
             return postPage.getContent();
         }
-        Pageable pageable = PageRequest.of(start/limit, limit, Sort.by("publishedAt").descending());
+        Pageable pageable = PageRequest.of(start, limit, Sort.by("publishedAt").descending());
         Page<Post> postPage = postRepository.findAll(pageable);
         return postPage.getContent();
     }
@@ -120,24 +120,24 @@ public class PostServiceImpl implements PostService{
                                                     Integer limit, String sortType) {
         LocalDateTime fromDateTime = dateFormatter(fromDateString);
         LocalDateTime toDateTime = dateFormatter(toDateString);
-        List<Post> searchedPost = new ArrayList<>();
-        if(!keyword.isEmpty()){
-            if(sortType.equals("oldest")){
-                Pageable pageable = PageRequest.of(start/limit, limit, Sort.by("publishedAt").ascending());
+        List<Post> searchedPost  = new ArrayList<>();
+        if (!keyword.isEmpty()) {
+            if (sortType.equals("oldest")) {
+                Pageable pageable = PageRequest.of(start, limit, Sort.by("publishedAt").ascending());
                 Page<Post> postPage = postRepository.searchPostsByKeywordOrderByPublished(keyword, pageable);
-                searchedPost =  postPage.getContent();
+                searchedPost.addAll(postPage.getContent());
             } else {
-                Pageable pageable = PageRequest.of(start/limit, limit, Sort.by("publishedAt").descending());
+                Pageable pageable = PageRequest.of(start, limit, Sort.by("publishedAt").descending());
                 Page<Post> postPage = postRepository.searchPostsByKeywordOrderByPublished(keyword, pageable);
-                searchedPost =  postPage.getContent();
+                searchedPost.addAll(postPage.getContent());
             }
         } else {
             if(sortType.equals("oldest")){
-                Pageable pageable = PageRequest.of(start/limit, limit, Sort.by("publishedAt").ascending());
+                Pageable pageable = PageRequest.of(start, limit, Sort.by("publishedAt").ascending());
                 Page<Post> postPage = postRepository.filterByAuthorsDateAndTags(authorIds, fromDateTime, toDateTime, tags, pageable);
                 return postPage.getContent();
             } else {
-                Pageable pageable = PageRequest.of(start/limit, limit, Sort.by("publishedAt").descending());
+                Pageable pageable = PageRequest.of(start, limit, Sort.by("publishedAt").descending());
                 Page<Post> postPage = postRepository.filterByAuthorsDateAndTags(authorIds, fromDateTime, toDateTime, tags, pageable);
                 return postPage.getContent();
             }
@@ -158,11 +158,11 @@ public class PostServiceImpl implements PostService{
             return findAll(start, limit, sortType);
         }
         if(sortType.equals("oldest")){
-            Pageable pageable = PageRequest.of(start/limit, limit, Sort.by("publishedAt").ascending());
+            Pageable pageable = PageRequest.of(start, limit, Sort.by("publishedAt").ascending());
             Page<Post> postPage = postRepository.searchPostsByKeywordOrderByPublished(searchString, pageable);
             return postPage.getContent();
         }
-        Pageable pageable = PageRequest.of(start/limit, limit, Sort.by("publishedAt").descending());
+        Pageable pageable = PageRequest.of(start, limit, Sort.by("publishedAt").descending());
         Page<Post> postPage = postRepository.searchPostsByKeywordOrderByPublished(searchString, pageable);
         return postPage.getContent();
     }
