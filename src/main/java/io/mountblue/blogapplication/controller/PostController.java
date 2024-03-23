@@ -89,7 +89,7 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public String filters(@RequestParam(value = "sortingOption", defaultValue = "newest") String sortingOption,
+    public String filterPosts(@RequestParam(value = "sortingOption", defaultValue = "newest") String sortingOption,
                           @RequestParam(value = "start", defaultValue = "0", required = false) Integer start,
                           @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit,
                           @RequestParam("searchString") String searchString,
@@ -107,7 +107,7 @@ public class PostController {
     }
 
     @GetMapping("/filters")
-    public String search(@RequestParam(value = "sortingOption", defaultValue = "newest") String sortingOption,
+    public String searchPosts(@RequestParam(value = "sortingOption", defaultValue = "newest") String sortingOption,
                          @RequestParam("searchString") String searchString,
                          @RequestParam(name = "selectedAuthor", required = false) List<User> selectedAuthors,
                          @RequestParam(name = "publishedFrom", required = false) String publishedFrom,

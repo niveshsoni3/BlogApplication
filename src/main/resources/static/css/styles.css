@@ -139,4 +139,12 @@ input[type="submit"] {
     border-radius: 5px;
     cursor: pointer;
 }
-
+.header-info{
+    display:flex;
+}
+.header-info h1{
+    margin-left: 40%;
+}
+.header-info >a{
+    margin: 2rem 0 0 30%;
+}
