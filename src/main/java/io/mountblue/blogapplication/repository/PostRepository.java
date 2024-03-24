@@ -22,18 +22,18 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "WHERE (:keyword IS NULL OR " +
             "p.title LIKE %:keyword% OR " +
             "p.content LIKE %:keyword% OR " +
-            "a.name LIKE %:keyword% OR " +
+            "a.username LIKE %:keyword% OR " +
             "t.name LIKE %:keyword%)")
     Page<Post> searchPostsByKeywordOrderByPublished(String keyword, Pageable pageable);
 
     @Query("SELECT p FROM Post p " +
             "LEFT JOIN p.tags t " +
             "LEFT JOIN p.author a " +
-            "WHERE (:authorIds IS NULL OR a.id IN :authorIds) " +
+            "WHERE (:authorUsernames IS NULL OR a.username IN :authorUsernames) " +
             "AND (:fromDate IS NULL OR :toDate IS NULL OR p.publishedAt BETWEEN :fromDate AND :toDate) " +
             "AND (:tags IS NULL OR t.id IN (:tags)) " +
             "GROUP BY p.id")
-    Page<Post> filterByAuthorsDateAndTags( List<User> authorIds,
+    Page<Post> filterByAuthorsDateAndTags( List<String> authorUsernames,
                                          LocalDateTime fromDate,
                                          LocalDateTime toDate,
                                          List<Long> tags, Pageable pageable);
@@ -41,11 +41,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT DISTINCT p FROM Post p " +
             "LEFT JOIN p.tags t " +
             "LEFT JOIN p.author a " +
-            "WHERE (:authorIds IS NULL OR a.id IN :authorIds) " +
+            "WHERE (:authorUsernames IS NULL OR a.username IN :authorUsernames) " +
             "AND (:fromDate IS NULL OR :toDate IS NULL OR p.publishedAt BETWEEN :fromDate AND :toDate) " +
             "AND (:tags IS NULL OR t.id IN (:tags)) " +
             "GROUP BY p.id")
-    Set<Post> filterByAuthorsDateAndTagsWithoutPagination( List<User> authorIds,
+    Set<Post> filterByAuthorsDateAndTagsWithoutPagination( List<String> authorUsernames,
                                            LocalDateTime fromDate,
                                            LocalDateTime toDate,
                                            List<Long> tags);

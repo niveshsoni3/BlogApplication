@@ -4,10 +4,14 @@ import io.mountblue.blogapplication.model.Post;
 import io.mountblue.blogapplication.model.Tag;
 import io.mountblue.blogapplication.model.User;
 import io.mountblue.blogapplication.repository.PostRepository;
+import io.mountblue.blogapplication.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,12 +22,15 @@ import java.util.*;
 
 @Service
 public class PostServiceImpl implements PostService{
-    private PostRepository postRepository;
-    private TagService tagService;
+    private final PostRepository postRepository;
+    private final TagService tagService;
 
-    public PostServiceImpl(PostRepository postRepository, TagService tagService) {
+    private final UserRepository userRepository;
+
+    public PostServiceImpl(PostRepository postRepository, TagService tagService, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.tagService = tagService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -66,6 +73,13 @@ public class PostServiceImpl implements PostService{
             post.setPublished(true);
             post.setPublishedAt(LocalDateTime.now());
         }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+
+        User author = userRepository.findByUsername(username).get();
+
+        post.setAuthor(author);
         postRepository.save(post);
     }
 
@@ -115,7 +129,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<Post> searchAndFilterPostsByKeyword(String keyword, List<User> authorIds, String fromDateString,
+    public List<Post> searchAndFilterPostsByKeyword(String keyword, List<String> authorUsernames, String fromDateString,
                                                     String toDateString, List<Long> tags, Integer start,
                                                     Integer limit, String sortType) {
         LocalDateTime fromDateTime = dateFormatter(fromDateString);
@@ -134,15 +148,15 @@ public class PostServiceImpl implements PostService{
         } else {
             if(sortType.equals("oldest")){
                 Pageable pageable = PageRequest.of(start, limit, Sort.by("publishedAt").ascending());
-                Page<Post> postPage = postRepository.filterByAuthorsDateAndTags(authorIds, fromDateTime, toDateTime, tags, pageable);
+                Page<Post> postPage = postRepository.filterByAuthorsDateAndTags(authorUsernames, fromDateTime, toDateTime, tags, pageable);
                 return postPage.getContent();
             } else {
                 Pageable pageable = PageRequest.of(start, limit, Sort.by("publishedAt").descending());
-                Page<Post> postPage = postRepository.filterByAuthorsDateAndTags(authorIds, fromDateTime, toDateTime, tags, pageable);
+                Page<Post> postPage = postRepository.filterByAuthorsDateAndTags(authorUsernames, fromDateTime, toDateTime, tags, pageable);
                 return postPage.getContent();
             }
         }
-        Set<Post> allFilteredPost = postRepository.filterByAuthorsDateAndTagsWithoutPagination(authorIds, fromDateTime, toDateTime, tags);
+        Set<Post> allFilteredPost = postRepository.filterByAuthorsDateAndTagsWithoutPagination(authorUsernames, fromDateTime, toDateTime, tags);
         List<Post> allFilteredAndSearchedPosts = new ArrayList<>();
         for(Post post : searchedPost){
             if (allFilteredPost.contains(post)){

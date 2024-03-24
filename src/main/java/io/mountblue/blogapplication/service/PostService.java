@@ -15,7 +15,7 @@ public interface PostService {
     void updatePost(Post post, String tagList);
     Post findById(long id);
     void removePost(Post post);
-    List<Post> searchAndFilterPostsByKeyword(String keyword, List<User> authorIds, String fromDateString,
+    List<Post> searchAndFilterPostsByKeyword(String keyword, List<String> authorUsernames, String fromDateString,
                                              String toDateString, List<Long> tags, Integer start, Integer limit, String sortType);
     List<Post> searchByTitleContentTagsAndAuthorName(String searchString, String sortType, Integer start, Integer limit);
 

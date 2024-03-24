@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+          xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Post</title>
@@ -82,42 +83,44 @@
     <div>
         <h1 th:text="${post.title}"></h1>
 
-        <p >Nivesh Soni</p>
+        <p th:text="${post.author.username}"></p>
         <p th:text="${'Created at: ' + post.publishedAt}"></p><br>
         <p th:text="${post.content}"></p>
         <p th:text="${post.tags}"></p>
         <div class="buttons">
-        <a class="new-blog-button" th:href="@{/showPostToUpdate(postId=${post.id})}">
-            Update
-        </a>
-        <a class="new-blog-button" th:href="@{/deletePost(postId=${post.id})}">
-            Delete
-        </a>
+        <div th:if="${post.author.username == currentUser}">
+            <a class="new-blog-button" th:href="@{/showPostToUpdate(postId=${post.id})}">
+                Update
+            </a>
+            <a class="new-blog-button" th:href="@{/deletePost(postId=${post.id})}">
+                Delete
+            </a>
+        </div>
         </div>
     </div>
 
 
-    <div>
+    <div sec:authorize="hasRole('AUTHOR')">
         <p>Add a comment below</p>
         <form action="#" th:action="@{/addComment}" th:object="${comment}" method="post">
             <textarea name="newComment" id="newComment" th:text="*{comment}"></textarea>
             <input type="hidden" name="postId" id="postId" th:value="${post.id}">
             <input type="hidden" name="id" th:value="*{id}" />
 
-            <input type="submit" value="submit">
+            <input type="submit" value="comment">
         </form>
         <div class="post-container" th:each="comment : ${post.comments}">
             <div class="comment-box">
-                <p th:text="${'Author : ' + comment.post.id}"></p>
+                <p th:text="${'Author : ' + comment.user.username}"></p>
                 <p th:text="${comment.comment}"></p>
-                <a  style="text-align: center" th:href="@{'/updateComment/' + ${comment.id}}">
-                    Update
-                </a>
-                <a class="new-blog-button" th:href="@{'/deleteComment/' + ${comment.id}}">
-                    Delete
-                </a>
+                    <a  style="text-align: center" th:href="@{'/updateComment/' + ${comment.id}}">
+                        Update
+                    </a>
+                    <a class="new-blog-button" th:href="@{'/deleteComment/' + ${comment.id}}">
+                        Delete
+                    </a>
             </div>
+
         </div>
-    </div>
 </body>
 </html>

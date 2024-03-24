@@ -6,12 +6,18 @@
 </head>
 <body>
 <h2>Login</h2>
-<form action="#" th:action="@{/getUser}" method="POST" th:object="${user}">
+<form action="#" th:action="@{/authenticateTheUser}" method="POST" >
+    <div th:if="${param.error}">
+        <i style="color: red">You entered invalid username/password</i>
+    </div>
+    <div th:if="${param.logout}">
+        <i style="color: aquamarine">You have been logged out</i>
+    </div>
     <label for="username">Username:</label>
-    <input type="text" id="username" name="username" th:field="*{username}" required><br><br>
+    <input type="text" id="username" name="username"  required><br><br>
 
     <label for="password">Password:</label>
-    <input type="password" id="password" name="password" th:field="*{password}" required><br><br>
+    <input type="password" id="password" name="password"  required><br><br>
 
     <button type="submit">Login</button>
 </form>

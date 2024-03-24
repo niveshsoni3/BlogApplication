@@ -1,12 +1,158 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>My Blog Application</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
 
+        .container {
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+        .link-button{
+            display: flex;
+            gap:5rem;
+        }
+        .link-button a{
+            display: block;
+            text-align: center;
+            background-color: #000;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .list-wrapper {
+            display: flex;
+        }
+        .filter-container {
+            width: 100%;
+        }
 
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
+
+        .filter-list {
+            margin-bottom: 20px;
+            width: 450px;
+        }
+
+        .filter-form {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .date-filter {
+            margin-bottom: 10px;
+        }
+
+        .tag-filter {
+            margin-bottom: 10px;
+        }
+
+        .new-blog-button {
+            display: block;
+            text-align: center;
+            background-color: #000;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .new-blog-button:hover {
+            background-color: #444;
+        }
+
+        .search {
+            margin-bottom: 20px;
+        }
+
+        .search input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .post-list {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 2rem;
+        }
+
+        .post-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .post-container a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .post-container h2 {
+            margin-bottom: 10px;
+        }
+
+        /* Form styling */
+
+        input[type="date"],
+        input[type="text"],
+        select {
+            width: 30%;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .header-info{
+            display:flex;
+        }
+        .header-info h1{
+            margin-left: 40%;
+        }
+        .header-info >a{
+            margin: 2rem 0 0 30%;
+        }
     </style>
 </head>
 <body>
@@ -14,10 +160,16 @@
     <header>
         <div class="header-info">
         <h1>My Blog Application</h1>
-
-        <a class="new-blog-button" th:href="@{/login}">
-            Login
-        </a>
+        <div sec:authorize="!isAuthenticated()">
+            <a class="new-blog-button" th:href="@{/login}">
+                Login
+            </a>
+        </div>
+        <div sec:authorize="isAuthenticated()">
+            <form action="#" th:action="@{/logout}" method="POST">
+                <input type="submit" class="new-blog-button" value="Logout"/>
+            </form>
+        </div>
         </div>
     </header>
 
@@ -71,12 +223,12 @@
                         <span th:text="${tag.name}"></span>
                     </div>
                 </div>
-                <!--<p>Author</p>
+                <p>Author</p>
                 <div class="author-filter" th:each="author : ${allAuthor}">
-                    <span th:if="${selectedAuthor.contains(author)}"> </span>
-                    <span th:text="${author.name}"></span>
-                    <input type="checkbox" name="selectedAuthors" th:value="${author.id}" th:checked="${selectedAuthor.contains(author)}" />
-                </div>-->
+                    <span th:if="${selectedAuthors.contains(author)}"> </span>
+                    <input type="checkbox" name="selectedAuthors" th:value="${author}" th:checked="${selectedAuthors.contains(author)}" />
+                    <span th:text="${author.username}"></span>
+                </div>
                 <input type="hidden" name="searchString" th:value="${searchString}">
                 <input type="submit" value="Apply filter">
             </form>
@@ -87,7 +239,7 @@
                 <a th:href="@{'/post/' + ${post.id}}">
                     <h2 th:text="${post.title}"></h2>
 
-                    <p>Author: <span th:text="${post.author}"></span></p>
+                    <p>Author: <span th:text="${post.author.username}"></span></p>
 
                     <p>Published Date: <span th:text="${post.publishedAt}"></span></p>
 
@@ -115,15 +267,6 @@
         <input type="hidden" name="sortingOption" th:value="${sortingOption}" />
         <button type="submit">Next</button>
     </form>
-
-    <!--<a class="new-blog-button" th:if="${start > 0}"
-       th:href="@{${currentPageUrl}(start = ${start != null ? (start - 1) : 0}, limit=${limit ?: 10},
-        searchString = ${searchString}, selectedTags = ${#strings.listJoin(selectedTags, ',')}, sortingOption = ${sortingOption}, sortingOption = ${sortingOption})}">Previous</a>
-    <a class="new-blog-button" th:href="@{${currentPageUrl}(start = ${start != null ? (start + 1) : 0}, limit=${limit ?: 10},
-        searchString = ${searchString}, selectedTags = ${#strings.listJoin(selectedTags, ',')}, sortingOption = ${sortingOption}, sortingOption = ${sortingOption})}">Next</a>-->
-
-
-
 </div>
 </body>
 </html>
