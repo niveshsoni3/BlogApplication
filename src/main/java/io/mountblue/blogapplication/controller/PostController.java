@@ -131,27 +131,21 @@ public class PostController {
                          @RequestParam(value = "start", defaultValue = "0", required = false) Integer start,
                          @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit,
                          Model model){
-        System.out.println("up");
         List<Tag> selectedTagsObject = tagService.findByIds(selectedTags);
         List<User> selectedAuthorsObject = userService.findByUsernames(selectedAuthors);
-        System.out.println("here");
         List<Post> postsBasedOnSearch = postService.searchAndFilterPostsByKeyword(searchString, selectedAuthors,
         publishedFrom, publishedTo, selectedTags, start, limit, sortingOption);
-        System.out.println("here2");
         model.addAttribute("posts", postsBasedOnSearch);
         List<Tag> allTags = tagService.findAll();
         List<User> allAuthor = userService.findAll();
         model.addAttribute("allTags", allTags );
         model.addAttribute("allAuthor", allAuthor);
         model.addAttribute("selectedTags", selectedTags == null? new ArrayList<Tag>() : selectedTagsObject);
-        System.out.println("here3");
         model.addAttribute("selectedAuthors", selectedAuthors == null? new ArrayList<User>() : selectedAuthorsObject);
-        System.out.println("here4");
         model.addAttribute("start", start);
         model.addAttribute("limit", limit);
         model.addAttribute("searchString", searchString);
         model.addAttribute("currentPageUrl", "/filters");
-        System.out.println("down");
         return "homepage";
     }
 }

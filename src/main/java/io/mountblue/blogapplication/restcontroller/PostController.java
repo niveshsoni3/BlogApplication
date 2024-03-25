@@ -48,6 +48,23 @@ public class PostController {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
+    @GetMapping("/posts/filters")
+    public ResponseEntity<List<Post>> filterPost(@RequestParam(value = "sortingOption", defaultValue = "newest") String sortingOption,
+                                                 @RequestParam("searchString") String searchString,
+                                                 @RequestParam(name = "selectedAuthors", required = false) List<String> selectedAuthors,
+                                                 @RequestParam(name = "publishedFrom", required = false) String publishedFrom,
+                                                 @RequestParam(name = "publishedTo", required = false) String publishedTo,
+                                                 @RequestParam(name = "selectedTags" , required = false) List<Long>  selectedTags,
+                                                 @RequestParam(value = "start", defaultValue = "0", required = false) Integer start,
+                                                 @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit){
+        List<Post> postsBasedOnSearch = postService.searchAndFilterPostsByKeyword(searchString, selectedAuthors,
+                publishedFrom, publishedTo, selectedTags, start, limit, sortingOption);
+        if(postsBasedOnSearch == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(postsBasedOnSearch, HttpStatus.OK);
+    }
+
     @PostMapping("/post")
     public ResponseEntity<String> savePost(@RequestBody Post post,
                          @RequestParam("tagList") String tagList,
