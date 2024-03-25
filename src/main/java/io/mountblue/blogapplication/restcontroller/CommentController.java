@@ -37,4 +37,18 @@ public class CommentController {
         return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
     }
 
+    @PostMapping("comment/{postId}")
+    public ResponseEntity<String> addComment(@PathVariable Long postId,
+                                             @RequestParam("newComment") String newComment,
+                                             @AuthenticationPrincipal UserDetails userDetails){
+        Post post = postService.findById(postId);
+        if(post == null){
+            return new ResponseEntity<>("Invalid post id", HttpStatus.BAD_REQUEST);
+        } else if (postService.isValidAuthor(userDetails, postId)) {
+            commentService.saveNewComment(postId, newComment);
+            return new ResponseEntity<>("Comment added successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Access denied ", HttpStatus.UNAUTHORIZED);
+    }
+
 }
