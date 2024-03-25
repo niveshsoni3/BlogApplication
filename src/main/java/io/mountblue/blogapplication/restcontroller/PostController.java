@@ -36,6 +36,18 @@ public class PostController {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
+    @GetMapping("/posts/search")
+    public ResponseEntity<List<Post>> searchPost(@RequestParam(value = "sortingOption", defaultValue = "newest") String sortingOption,
+                                                 @RequestParam(value = "start", defaultValue = "0", required = false) Integer start,
+                                                 @RequestParam(value = "limit", defaultValue = "10", required = false) Integer limit,
+                                                 @RequestParam("searchString") String searchString){
+        List<Post> posts = postService.searchByTitleContentTagsAndAuthorName(searchString, sortingOption, start, limit);
+        if(posts == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+
     @PostMapping("/post")
     public ResponseEntity<String> savePost(@RequestBody Post post,
                          @RequestParam("tagList") String tagList,
