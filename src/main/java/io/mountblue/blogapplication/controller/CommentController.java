@@ -12,8 +12,8 @@ import java.util.List;
 
 @Controller
 public class CommentController {
-    private CommentService commentService;
-    private PostService postService;
+    private final CommentService commentService;
+    private final PostService postService;
 
     public CommentController(CommentService commentService, PostService postService) {
         this.commentService = commentService;
@@ -22,7 +22,7 @@ public class CommentController {
 
     @PostMapping("/addComment")
     public String addComment(@ModelAttribute("comment") Comment comment,
-                             @RequestParam("postId") long postId,
+                             @RequestParam("postId") Long postId,
                              @RequestParam("newComment") String newComment){
         if(comment.getId() != null){
             commentService.updateComment(comment, newComment);
@@ -34,7 +34,7 @@ public class CommentController {
     }
 
     @GetMapping("/deleteComment/{commentId}")
-    public String deleteAComment(@PathVariable("commentId") long commentId){
+    public String deleteAComment(@PathVariable("commentId") Long commentId){
         Comment comment = commentService.findById(commentId);
         Post post = postService.findById(comment.getPost().getId());
         commentService.deleteComment(comment);
@@ -42,7 +42,7 @@ public class CommentController {
     }
 
     @GetMapping("/updateComment/{commentId}")
-    public String updateAComment(@PathVariable("commentId") long commentId, Model model){
+    public String updateAComment(@PathVariable("commentId") Long commentId, Model model){
         Comment comment = commentService.findById(commentId);
         Post post = postService.findById(comment.getPost().getId());
         model.addAttribute("post", post);
