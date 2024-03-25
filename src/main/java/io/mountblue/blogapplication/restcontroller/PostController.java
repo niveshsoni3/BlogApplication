@@ -63,4 +63,17 @@ public class PostController {
         return new ResponseEntity<>("Access denied", HttpStatus.UNAUTHORIZED);
     }
 
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId,
+                                             @AuthenticationPrincipal UserDetails userDetails){
+        Post post = postService.findById(postId);
+        if (post == null){
+            return new ResponseEntity<>("Invalid post id", HttpStatus.BAD_REQUEST);
+        } else if(postService.isValidAuthor(userDetails, postId)){
+            postService.removePost(post);
+            return new ResponseEntity<>("Post deleted successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Access denied", HttpStatus.UNAUTHORIZED);
+    }
+
 }
