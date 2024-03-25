@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .logout(logout ->
                         logout.permitAll())
                 .exceptionHandling(configurer ->
-                        configurer.accessDeniedPage("/accessDenied")
+                        configurer.accessDeniedPage("/access-denied")
                 );
         return httpSecurity.build();
     }
