@@ -30,6 +30,7 @@ public class SecurityConfig {
                         configurer
                                 .requestMatchers("/", "/search", "/filters",
                                         "/register", "/post/{postId}", "/saveUser").permitAll()
+                                .requestMatchers("/api/**").permitAll()
                                 .requestMatchers("/**").hasRole("AUTHOR")
                                 .requestMatchers("/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())

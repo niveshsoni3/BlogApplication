@@ -1,5 +1,7 @@
 package io.mountblue.blogapplication.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -25,8 +27,10 @@ public class User {
     private String password;
     private boolean enabled;
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Post> posts;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Role> roles;
 
     @Override

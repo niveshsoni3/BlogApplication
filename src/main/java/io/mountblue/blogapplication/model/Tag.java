@@ -1,5 +1,6 @@
 package io.mountblue.blogapplication.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Tag {
     @JoinTable(name = "post_tags",
             joinColumns = @JoinColumn(name = "tag_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id"))
+    @JsonBackReference
     private List<Post> posts;
     public Tag(String name) {
         this.name = name;

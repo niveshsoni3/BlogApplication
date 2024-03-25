@@ -59,7 +59,9 @@ public class PostServiceImpl implements PostService{
             Tag tag = allTagsByName.get(tagName.trim());
             if (tag == null) {
                 tag = new Tag(tagName.trim());
+                tag.setCreated_at(LocalDateTime.now());
             }
+            tag.setUpdated_at(LocalDateTime.now());
             updatedTags.add(tag);
         }
         if(post.getContent().length() > 150){

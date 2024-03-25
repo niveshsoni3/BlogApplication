@@ -1,5 +1,6 @@
 package io.mountblue.blogapplication.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,10 +21,12 @@ public class Comment {
     private Long id;
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.PERSIST})
     @JoinColumn(name = "username")
+    @JsonBackReference
     private User user;
     private String comment;
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.PERSIST})
     @JoinColumn(name = "post_id")
+    @JsonBackReference
     private Post post;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
