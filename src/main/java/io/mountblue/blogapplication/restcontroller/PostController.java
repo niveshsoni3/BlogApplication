@@ -27,4 +27,12 @@ public class PostController {
         return postService.findById(postId);
     }
 
+    @PostMapping("/post")
+    public Post savePost(@RequestBody Post post,
+                         @RequestParam("tagList") String tagList,
+                         @RequestParam("action") boolean action){
+        return postService.save(post, tagList, action);
+
+    }
+
 }

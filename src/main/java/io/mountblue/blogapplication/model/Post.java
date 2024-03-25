@@ -1,5 +1,6 @@
 package io.mountblue.blogapplication.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class Post {
     private String content;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "author_id")
-    @JsonManagedReference
+    @JsonIgnore
     private User author;
     private LocalDateTime publishedAt;
     private boolean isPublished;
@@ -36,11 +37,11 @@ public class Post {
     @JoinTable(name = "post_tags",
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    @JsonManagedReference
+    @JsonIgnore
     private List<Tag> tags;
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "post_id")
-    @JsonManagedReference
+    @JsonIgnore
     private List<Comment> comments;
 
 }

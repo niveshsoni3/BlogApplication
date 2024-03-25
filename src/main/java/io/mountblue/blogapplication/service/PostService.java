@@ -10,7 +10,7 @@ import java.util.Set;
 
 public interface PostService {
     List<Post> findAll(Integer start, Integer limit, String sortType);
-    void save(Post post, String tagList,  boolean action);
+    Post save(Post post, String tagList,  boolean action);
     void saveByPost(Post post);
     void updatePost(Post post, String tagList);
     Post findById(long id);

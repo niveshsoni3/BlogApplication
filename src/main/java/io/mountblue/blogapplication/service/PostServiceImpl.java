@@ -47,7 +47,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public void save(Post post, String tagList, boolean action) {
+    public Post save(Post post, String tagList, boolean action) {
         String[] newTagNames = tagList.trim().split(",");
         List<Tag> existingTags = tagService.findAll();
         Map<String, Tag> allTagsByName = new HashMap<>();
@@ -82,7 +82,7 @@ public class PostServiceImpl implements PostService{
         User author = userRepository.findByUsername(username).get();
 
         post.setAuthor(author);
-        postRepository.save(post);
+        return postRepository.save(post);
     }
 
     @Override

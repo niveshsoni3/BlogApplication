@@ -2,6 +2,8 @@ package io.mountblue.blogapplication.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -24,7 +26,7 @@ public class SecurityConfig {
         return  jdbcUserDetailsManager;
     }
 
-    @Bean
+    /*@Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(configurer ->
                         configurer
@@ -43,6 +45,19 @@ public class SecurityConfig {
                 .exceptionHandling(configurer ->
                         configurer.accessDeniedPage("/access-denied")
                 );
+        return httpSecurity.build();
+    }*/
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.authorizeHttpRequests(configurer ->
+                        configurer
+                                .requestMatchers(HttpMethod.GET, "/api/posts").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/post/{postId}").permitAll()
+                                .requestMatchers("/api/**").hasAnyRole("AUTHOR", "ADMIN")
+                                .anyRequest().authenticated());
+        httpSecurity.httpBasic(Customizer.withDefaults());
+        httpSecurity.csrf(csrf -> csrf.disable());
         return httpSecurity.build();
     }
 }
