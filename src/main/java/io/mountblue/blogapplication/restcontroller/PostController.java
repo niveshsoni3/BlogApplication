@@ -11,7 +11,6 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-
     public PostController(PostService postService) {
         this.postService = postService;
     }
@@ -21,6 +20,11 @@ public class PostController {
                                   @RequestParam(name = "limit") Integer limit,
                                   @RequestParam(name = "sortType") String sortType){
         return postService.findAll(start, limit, sortType);
+    }
+
+    @GetMapping("/post/{postId}")
+    public Post getPost(@PathVariable Long postId){
+        return postService.findById(postId);
     }
 
 }
