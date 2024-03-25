@@ -65,4 +65,16 @@ public class CommentController {
         return new ResponseEntity<>("Access denied ", HttpStatus.UNAUTHORIZED);
     }
 
+    @DeleteMapping("/comment/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Long commentId,
+                                                @AuthenticationPrincipal UserDetails userDetails){
+        Comment comment = commentService.findById(commentId);
+        if(comment == null){
+            return new ResponseEntity<>("Invalid comment id", HttpStatus.BAD_REQUEST);
+        } else if (postService.isValidAuthor(userDetails, comment.getPost().getId())) {
+            commentService.deleteComment(comment);
+            return new ResponseEntity<>("Comment deleted successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Access denied ", HttpStatus.UNAUTHORIZED);
+    }
 }
