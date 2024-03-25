@@ -86,7 +86,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public void updatePost(Post post, String tagList) {
+    public Post updatePost(Post post, String tagList) {
         Post existingPost = postRepository.findById(post.getId()).get();
         existingPost.setTitle(post.getTitle());
         existingPost.setContent(post.getContent());
@@ -111,7 +111,7 @@ public class PostServiceImpl implements PostService{
         existingPost.getTags().addAll(tagsToAdd);
         existingPost.getTags().removeAll(tagsToRemove);
         existingPost.setTags(updatedTags);
-        postRepository.save(existingPost);
+        return postRepository.save(existingPost);
     }
 
     @Override
@@ -123,6 +123,20 @@ public class PostServiceImpl implements PostService{
     @Override
     public void removePost(Post post) {
         postRepository.delete(post);
+    }
+
+    @Override
+    public boolean isValidAuthor(UserDetails userDetails, Long postId) {
+        Post post = findById(postId);
+        boolean isValid = false;
+        if(userDetails == null){
+            return false;
+        } else if(userDetails.getAuthorities().toString().contains("ROLE_ADMIN")){
+            isValid = true;
+        } else if (userDetails.getUsername().equals(post.getAuthor().getUsername())) {
+            isValid = true;
+        }
+        return isValid;
     }
 
     @Override

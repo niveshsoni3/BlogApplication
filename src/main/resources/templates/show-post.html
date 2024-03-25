@@ -88,7 +88,7 @@
         <p th:text="${post.content}"></p>
         <p th:text="${post.tags}"></p>
         <div class="buttons">
-        <div th:if="${post.author.username == currentUser}">
+        <div th:if="${post.author.username == currentUser or #authorization.expression('hasRole(''ADMIN'')')}">
             <a class="new-blog-button" th:href="@{/showPostToUpdate(postId=${post.id})}">
                 Update
             </a>

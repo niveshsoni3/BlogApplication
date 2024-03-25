@@ -26,15 +26,17 @@ public class SecurityConfig {
         return  jdbcUserDetailsManager;
     }
 
-    /*@Bean
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(configurer ->
+        httpSecurity
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(configurer ->
                         configurer
-                                .requestMatchers("/", "/search", "/filters",
-                                        "/register", "/post/{postId}", "/saveUser").permitAll()
-                                .requestMatchers("/api/**").permitAll()
-                                .requestMatchers("/**").hasRole("AUTHOR")
-                                .requestMatchers("/**").hasRole("ADMIN")
+                                .requestMatchers("/", "/search", "/filters", "/register",
+                                        "/post/{postId}", "/saveUser", "/api/posts").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/post/{postId}").permitAll()
+                                .requestMatchers("/api/**").hasAnyRole("AUTHOR", "ADMIN")
+                                .requestMatchers("/**").hasAnyRole("AUTHOR", "ADMIN")
                                 .anyRequest().authenticated())
                 .formLogin(form ->
                         form.loginPage("/login")
@@ -45,19 +47,8 @@ public class SecurityConfig {
                 .exceptionHandling(configurer ->
                         configurer.accessDeniedPage("/access-denied")
                 );
-        return httpSecurity.build();
-    }*/
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(configurer ->
-                        configurer
-                                .requestMatchers(HttpMethod.GET, "/api/posts").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/post/{postId}").permitAll()
-                                .requestMatchers("/api/**").hasAnyRole("AUTHOR", "ADMIN")
-                                .anyRequest().authenticated());
         httpSecurity.httpBasic(Customizer.withDefaults());
-        httpSecurity.csrf(csrf -> csrf.disable());
         return httpSecurity.build();
     }
+
 }
