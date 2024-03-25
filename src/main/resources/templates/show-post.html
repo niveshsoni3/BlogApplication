@@ -10,7 +10,7 @@
             background-color: #fff;
             color: #000;
             margin: 0;
-            padding: 0;
+            padding: 1rem;
         }
 
         h1 {
@@ -29,6 +29,15 @@
         }
 
         a.new-blog-button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #000;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .new-blog-button {
             display: inline-block;
             padding: 8px 16px;
             background-color: #000;
@@ -77,10 +86,46 @@
             background-color: #444;
         }
 
+        .header-info{
+            display:flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header{
+            text-decoration: none;
+            color: black;
+        }
+        .blog{
+            text-align: center;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <div>
+    <header>
+        <div class="header-info">
+            <h1><a class="header" th:href="@{/}">My Blog Application</a></h1>
+            <div sec:authorize="!isAuthenticated()">
+                <a class="buttons" th:href="@{/login}">
+                    Login
+                </a>
+            </div>
+            <div  sec:authorize="isAuthenticated()">
+                <form action="#" th:action="@{/logout}" method="POST">
+                    <input type="submit" class="buttons" value="Logout"/>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <div class="blog">
         <h1 th:text="${post.title}"></h1>
 
         <p th:text="${post.author.username}"></p>

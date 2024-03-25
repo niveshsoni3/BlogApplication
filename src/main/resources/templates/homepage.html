@@ -38,11 +38,6 @@
             width: 100%;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
         hr {
             border: none;
             border-top: 1px solid #ccc;
@@ -63,8 +58,10 @@
             margin-bottom: 10px;
         }
 
-        .tag-filter {
+        .filters{
             margin-bottom: 10px;
+            max-height: 200px;
+            overflow-y: scroll;
         }
 
         .new-blog-button {
@@ -124,8 +121,6 @@
             margin-bottom: 10px;
         }
 
-        /* Form styling */
-
         input[type="date"],
         input[type="text"],
         select {
@@ -146,12 +141,12 @@
         }
         .header-info{
             display:flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .header-info h1{
-            margin-left: 40%;
-        }
-        .header-info >a{
-            margin: 2rem 0 0 30%;
+        .header{
+            text-decoration: none;
+            color: black;
         }
     </style>
 </head>
@@ -159,24 +154,23 @@
 <div class="container">
     <header>
         <div class="header-info">
-        <h1>My Blog Application</h1>
-        <div sec:authorize="!isAuthenticated()">
-            <a class="new-blog-button" th:href="@{/login}">
-                Login
-            </a>
-        </div>
-        <div sec:authorize="isAuthenticated()">
-            <form action="#" th:action="@{/logout}" method="POST">
-                <input type="submit" class="new-blog-button" value="Logout"/>
-            </form>
-        </div>
+            <h1><a class="header" th:href="@{/}">My Blog Application</a></h1>
+            <div sec:authorize="!isAuthenticated()">
+                <a class="new-blog-button" th:href="@{/login}">
+                    Login
+                </a>
+            </div>
+            <div sec:authorize="isAuthenticated()">
+                <form action="#" th:action="@{/logout}" method="POST">
+                    <input type="submit" class="new-blog-button" value="Logout"/>
+                </form>
+            </div>
         </div>
     </header>
 
     <hr>
 
     <div>
-
         <div class=" link-button">
             <a class="new-blog-button" th:href="@{/newPost}">
                 Create new blog
@@ -193,7 +187,7 @@
     </div>
     <form th:action="@{${currentPageUrl}}" method="get">
         <input type="hidden" name="searchString" th:value="${searchString}">
-        <div class="tag-filter" th:each="tag : ${selectedTags}">
+        <div th:each="tag : ${selectedTags}">
             <span th:if="${selectedTags.contains(tag)}"> </span>
             <input type="hidden" name="selectedTags" th:value="${tag.id}"/>
         </div>
@@ -214,20 +208,23 @@
                         <input type="date" th:value="${publishedFrom}" name="publishedFrom" >
                         <label>To:</label>
                         <input type="date" th:value="${publishedTo}" name="publishedTo" >
-
                     </div>
-
                     <h4>Tags</h4>
-                    <div class="tag-filter" th:each="tag : ${allTags}">
-                        <input type="checkbox" name="selectedTags" th:value="${tag.id}" th:checked="${selectedTags.contains(tag)}" />
-                        <span th:text="${tag.name}"></span>
+                    <div class="filters">
+                        <div  th:each="tag : ${allTags}">
+                            <input type="checkbox" name="selectedTags" th:value="${tag.id}" th:checked="${selectedTags.contains(tag)}" />
+                            <span th:text="${tag.name}"></span>
+                        </div>
                     </div>
+
                 </div>
                 <p>Author</p>
-                <div class="author-filter" th:each="author : ${allAuthor}">
-                    <span th:if="${selectedAuthors.contains(author)}"> </span>
-                    <input type="checkbox" name="selectedAuthors" th:value="${author}" th:checked="${selectedAuthors.contains(author)}" />
-                    <span th:text="${author.username}"></span>
+                <div class="filters">
+                    <div class="author-filter" th:each="author : ${allAuthor}">
+                        <span th:if="${selectedAuthors.contains(author)}"> </span>
+                        <input type="checkbox" name="selectedAuthors" th:value="${author}" th:checked="${selectedAuthors.contains(author)}" />
+                        <span th:text="${author.username}"></span>
+                    </div>
                 </div>
                 <input type="hidden" name="searchString" th:value="${searchString}">
                 <input type="submit" value="Apply filter">

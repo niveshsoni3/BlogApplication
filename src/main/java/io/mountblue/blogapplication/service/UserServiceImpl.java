@@ -3,6 +3,7 @@ package io.mountblue.blogapplication.service;
 import io.mountblue.blogapplication.model.Role;
 import io.mountblue.blogapplication.model.User;
 import io.mountblue.blogapplication.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Array;
@@ -33,7 +34,9 @@ public class UserServiceImpl implements UserService{
         role.setUser(user);
         user.setEnabled(true);
         user.setRoles(new ArrayList<>(List.of(role)));
-        user.setPassword("{noop}" + user.getPassword());
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
         userRepository.save(user);
 
     }

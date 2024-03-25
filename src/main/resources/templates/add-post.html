@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Create Blog Post</title>
@@ -7,7 +8,8 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 1rem;
+
         }
 
         h1 {
@@ -32,27 +34,58 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-
+        textarea{
+            height: 400px;
+        }
         input[type="hidden"] {
             display: none;
         }
 
-        button[type="submit"] {
+        input[type="submit"], button[type="submit"] {
             padding: 10px 20px;
             border: none;
             border-radius: 4px;
-            background-color: #656565;
+            background-color: #000000;
+            color: white;
+            cursor: pointer;
+        }
+        new-blog-button{
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #000000;
             color: white;
             cursor: pointer;
         }
 
-        button[type="submit"]:hover {
-            background-color: #000000;
+        .header-info{
+            display:flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
+        .header{
+            text-decoration: none;
+            color: black;
+        }
     </style>
 </head>
 <body>
+    <header>
+        <div class="header-info">
+            <h1><a class="header" th:href="@{/}">My Blog Application</a></h1>
+            <div sec:authorize="!isAuthenticated()">
+                <a class="new-blog-button" th:href="@{/login}">
+                    Login
+                </a>
+            </div>
+            <div sec:authorize="isAuthenticated()">
+                <form action="#" th:action="@{/logout}" method="POST">
+                    <input type="submit" class="new-blog-button" value="Logout"/>
+                </form>
+            </div>
+        </div>
+    </header>
+
     <h1>Create Blog Post</h1>
 
     <form action="#" th:action="@{/create}" th:object="${post}" method="post">
