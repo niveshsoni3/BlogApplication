@@ -148,7 +148,7 @@
     <div sec:authorize="hasRole('AUTHOR')">
         <p>Add a comment below</p>
         <form action="#" th:action="@{/addComment}" th:object="${comment}" method="post">
-            <textarea name="newComment" id="newComment" th:text="*{comment}"></textarea>
+            <textarea name="newComment" id="newComment" th:text="*{comment}" required></textarea>
             <input type="hidden" name="postId" id="postId" th:value="${post.id}">
             <input type="hidden" name="id" th:value="*{id}" />
 

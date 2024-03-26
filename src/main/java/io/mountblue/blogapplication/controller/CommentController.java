@@ -24,9 +24,6 @@ public class CommentController {
     public String addComment(@ModelAttribute("comment") Comment comment,
                              @RequestParam("postId") Long postId,
                              @RequestParam("newComment") String newComment){
-        if(newComment.equals("")){
-            return "redirect:/post/" + postId;
-        }
         if(comment.getId() != null){
             commentService.updateComment(comment, newComment);
             return "redirect:/post/" + postId;
